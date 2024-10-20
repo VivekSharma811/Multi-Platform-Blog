@@ -26,7 +26,7 @@ suspend fun checkUser(context: ApiContext) {
         user?.let {
             context.res.setBodyText(
                 Json.encodeToString<UserSecured>(
-                    UserSecured(id = user.id, username = user.username)
+                    UserSecured(_id = user._id, username = user.username)
                 )
             )
         } ?: {

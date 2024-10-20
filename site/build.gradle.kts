@@ -24,7 +24,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
-            implementation(libs.kmongo.database)
         }
 
         jsMain.dependencies {
