@@ -64,7 +64,7 @@ import org.w3c.dom.set
 fun LoginScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val context = rememberPageContext()
-    var errorText by remember { mutableStateOf("") }
+    var errorText by remember { mutableStateOf(" ") }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -160,16 +160,16 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                                         password = password
                                     )
                                 )
-                                user?.let {
+                                if(user != null) {
                                     rememberUserSession(true, user)
-                                    context.router.navigateTo("admin/home")
-                                } ?: {
+                                    context.router.navigateTo("/admin")
+                                } else {
                                     errorText = "User does not exist"
                                 }
                             } else {
                                 errorText = "Input Fields are invalid"
                                 delay(3000)
-                                errorText = ""
+                                errorText = " "
                             }
                         }
                     }
@@ -182,6 +182,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .width(350.px)
                     .color(Colors.Red)
+                    .fontFamily(FONT_FAMILY)
                     .textAlign(TextAlign.Center),
                 text = errorText
             )
