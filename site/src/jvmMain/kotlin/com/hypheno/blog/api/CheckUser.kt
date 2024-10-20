@@ -7,6 +7,7 @@ import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
 import com.varabyte.kobweb.api.http.setBodyText
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import java.nio.charset.StandardCharsets
@@ -20,7 +21,10 @@ suspend fun checkUser(context: ApiContext) {
         }
         val user = userRequest?.let {
             context.data.getValue<MongoDB>().checkUserExistence(
-                User(username = it.username, password = it.password.hashPassword())
+                User(
+                    username = it.username,
+                    password = it.password.hashPassword()
+                )
             )
         }
         user?.let {
@@ -42,6 +46,24 @@ suspend fun checkUser(context: ApiContext) {
                 Exception(e.message)
             )
         )
+    }
+}
+
+@Api(routeOverride = "checkuserid")
+suspend fun checkUserId(context: ApiContext) {
+    try {
+        val idRequest = context.req.body?.decodeToString()
+            ?.let { Json.decodeFromString<String>(it) }
+        val result = idRequest?.let {
+            context.data.getValue<MongoDB>().checkUserId(it)
+        }
+        result?.let {
+            context.res.setBodyText(Json.encodeToString(result))
+        } ?: {
+            context.res.setBodyText(Json.encodeToString(false))
+        }
+    } catch (e: Exception) {
+        context.res.setBodyText(Json.encodeToString(false))
     }
 }
 
