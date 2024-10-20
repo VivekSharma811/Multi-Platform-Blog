@@ -24,6 +24,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
+            implementation(libs.kmongo.database)
         }
 
         jsMain.dependencies {
@@ -31,8 +32,7 @@ kotlin {
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
             implementation(libs.silk.icons.fa)
-            // implementation(libs.kobwebx.markdown)
-            
+            implementation(libs.kotlinx.serialization)
         }
         jvmMain.dependencies {
             compileOnly(libs.kobweb.api)
