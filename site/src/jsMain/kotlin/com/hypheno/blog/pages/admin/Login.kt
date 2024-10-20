@@ -71,6 +71,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     .padding(leftRight = 20.px)
                     .background(Colors.White)
                     .fontFamily(FONT_FAMILY)
+                    .fontSize(14.px)
                     .border(
                         width = 0.px,
                         style = LineStyle.None,
@@ -94,6 +95,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     .padding(leftRight = 20.px)
                     .background(Colors.White)
                     .fontFamily(FONT_FAMILY)
+                    .fontSize(14.px)
                     .border(
                         width = 0.px,
                         style = LineStyle.None,
@@ -117,7 +119,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     .color(Colors.White)
                     .borderRadius(4.px)
                     .fontWeight(FontWeight.Medium)
-                    .fontSize(16.px)
+                    .fontSize(14.px)
                     .fontFamily(FONT_FAMILY)
                     .border(
                         width = 0.px,
