@@ -10,6 +10,7 @@ import com.hypheno.blog.util.Id.navigationText
 import com.hypheno.blog.util.Id.svgParent
 import com.hypheno.blog.util.Id.vectorIcon
 import com.hypheno.blog.util.Res
+import com.hypheno.blog.util.logout
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.dom.svg.Path
 import com.varabyte.kobweb.compose.dom.svg.Svg
@@ -74,7 +75,9 @@ fun SidePanel(modifier: Modifier = Modifier) {
             selected = context.route.path == Screen.AdminHome.route,
             title = "Home",
             icon = Res.PathIcon.home,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminHome.route)
+            }
         )
 
         NavigationItem(
@@ -82,7 +85,9 @@ fun SidePanel(modifier: Modifier = Modifier) {
             title = "Create Post",
             selected = context.route.path == Screen.AdminCreate.route,
             icon = Res.PathIcon.create,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminCreate.route)
+            }
         )
 
         NavigationItem(
@@ -90,13 +95,18 @@ fun SidePanel(modifier: Modifier = Modifier) {
             title = "My Posts",
             selected = context.route.path == Screen.AdminMyPosts.route,
             icon = Res.PathIcon.posts,
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminMyPosts.route)
+            }
         )
 
         NavigationItem(
             title = "Logout",
             icon = Res.PathIcon.logout,
-            onClick = {}
+            onClick = {
+                logout()
+                context.router.navigateTo(Screen.AdminLogin.route)
+            }
         )
     }
 }

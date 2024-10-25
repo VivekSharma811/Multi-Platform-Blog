@@ -10,6 +10,7 @@ import com.hypheno.blog.navigation.Screen
 import com.varabyte.kobweb.core.rememberPageContext
 import kotlinx.browser.localStorage
 import org.w3c.dom.get
+import org.w3c.dom.set
 
 @Composable
 fun IsUserLoggedIn(content: @Composable () -> Unit) {
@@ -19,16 +20,22 @@ fun IsUserLoggedIn(content: @Composable () -> Unit) {
     var userIdExists by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        userIdExists = if(userId.isNullOrEmpty().not()) {
+        userIdExists = if (userId.isNullOrEmpty().not()) {
             checkUserId(userId!!)
         } else false
 
-        if((remembered && userIdExists).not()) {
+        if ((remembered && userIdExists).not()) {
             context.router.navigateTo(Screen.AdminLogin.route)
         }
     }
 
-    if(remembered && userIdExists) {
+    if (remembered && userIdExists) {
         content()
     }
+}
+
+fun logout() {
+    localStorage["remember"] = "false"
+    localStorage["userId"] = ""
+    localStorage["username"] = ""
 }
