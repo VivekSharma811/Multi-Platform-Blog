@@ -5,20 +5,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.util.Constants.FONT_FAMILY
-import com.hypheno.blog.util.Constants.HUMOR_API_URL
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.Res
-import com.varabyte.kobweb.browser.api
-import com.varabyte.kobweb.browser.http.http
+import com.hypheno.blog.util.fetchRandomJoke
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -54,17 +51,10 @@ import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
-import kotlinx.browser.localStorage
-import kotlinx.browser.window
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
-import org.w3c.dom.get
-import org.w3c.dom.set
-import kotlin.js.Date
 
 @Page
 @Composable
@@ -76,48 +66,10 @@ fun HomePage(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeScreen() {
-    val scope = rememberCoroutineScope()
     var randomJoke: RandomJoke? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
-        val date = localStorage["date"]
-        if(date != null) {
-            val difference = (Date.now() - date.toDouble())
-            val hasDayPassed = difference >= 86400000
-            if(hasDayPassed) {
-                scope.launch {
-                    try {
-                        val result = window.http.get(HUMOR_API_URL).decodeToString()
-                        randomJoke = Json.decodeFromString(result)
-                        localStorage["date"] = Date.now().toString()
-                        localStorage["joke"] = result
-                    } catch (e: Exception) {
-                        println(e.message)
-                        randomJoke = RandomJoke(id = -1, "Unexpected error")
-                    }
-                }
-            } else {
-                try {
-                    randomJoke =
-                        localStorage["joke"]?.let { Json.decodeFromString(it) }
-                } catch (e: Exception) {
-                    println(e.message)
-                    randomJoke = RandomJoke(id = -1, "Unexpected error")
-                }
-            }
-        } else {
-            scope.launch {
-                try {
-                    val result = window.http.get(HUMOR_API_URL).decodeToString()
-                    randomJoke = Json.decodeFromString(result)
-                    localStorage["date"] = Date.now().toString()
-                    localStorage["joke"] = result
-                } catch (e: Exception) {
-                    println(e.message)
-                    randomJoke = RandomJoke(id = -1, "Unexpected error")
-                }
-            }
-        }
+        fetchRandomJoke { randomJoke = it }
     }
 
     AdminPageLayout {
