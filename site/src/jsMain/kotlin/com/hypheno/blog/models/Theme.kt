@@ -32,4 +32,20 @@ enum class Theme(
         hex = "#FFFFFF",
         rgb = rgb(255, 255, 255)
     ),
+    Green(
+        hex = "#00FF94",
+        rgb = rgb(0, 255, 148)
+    ),
+    Yellow(
+        hex = "#FFEC45",
+        rgb = rgb(255, 236, 69)
+    ),
+    Red(
+        hex = "#FF6359",
+        rgb = rgb(255, 99, 89)
+    ),
+    Purple(
+        hex = "#8B6DFF",
+        rgb = rgb(139, 109, 255)
+    ),
 }

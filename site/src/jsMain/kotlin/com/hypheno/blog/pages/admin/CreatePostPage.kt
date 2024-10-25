@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.SidePanel
+import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
@@ -69,6 +70,7 @@ fun CreatePostScreen() {
     var popularSwitch by remember { mutableStateOf(false) }
     var mainSwitch by remember { mutableStateOf(false) }
     var sponsoredSwitch by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf(Category.Technology) }
     AdminPageLayout {
         Box(
             modifier = Modifier
@@ -184,6 +186,68 @@ fun CreatePostScreen() {
                             attr("value", "")
                         }
                 )
+                CategoryDropdown(
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { selectedCategory = it }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CategoryDropdown(
+    selectedCategory: Category,
+    onCategorySelected: (Category) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .margin(topBottom = 12.px)
+            .classNames("dropdown")
+            .fillMaxWidth()
+            .height(54.px)
+            .backgroundColor(Theme.LightGray.rgb)
+            .cursor(Cursor.Pointer)
+            .attrsModifier {
+                attr("data-bs-toggle", "dropdown")
+            }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(leftRight = 20.px),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            SpanText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fontSize(16.px)
+                    .fontFamily(FONT_FAMILY),
+                text = selectedCategory.name
+            )
+            Box(modifier = Modifier.classNames("dropdown-toggle"))
+        }
+        Ul(
+            attrs = Modifier
+                .fillMaxWidth()
+                .classNames("dropdown-menu")
+                .toAttrs()
+        ) {
+            Category.entries.forEach { category ->
+                Li {
+                    A(
+                        attrs = Modifier
+                            .classNames("dropdown-item")
+                            .color(Colors.Black)
+                            .fontFamily(FONT_FAMILY)
+                            .fontSize(16.px)
+                            .onClick { onCategorySelected(category) }
+                            .toAttrs()
+                    ) {
+                        Text(value = category.name)
+                    }
+                }
             }
         }
     }
