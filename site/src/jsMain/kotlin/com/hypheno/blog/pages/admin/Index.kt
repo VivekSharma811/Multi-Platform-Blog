@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
+import com.hypheno.blog.components.LoadingIndicator
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
@@ -144,7 +145,7 @@ fun HomeContent(
                     )
                 }
             }
-        }
+        } ?: LoadingIndicator()
     }
 }
 
