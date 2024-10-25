@@ -2,12 +2,20 @@ package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
 import com.hypheno.blog.components.AdminPageLayout
+import com.hypheno.blog.models.Joke
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
+import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
+import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
+import com.hypheno.blog.util.Res
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
+import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -15,21 +23,30 @@ import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.size
+import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
@@ -44,7 +61,77 @@ fun HomePage(modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreen() {
     AdminPageLayout {
+        HomeContent(joke = Joke(id = 1, joke = "Joke:Joke"))
         AddButton()
+    }
+}
+
+@Composable
+fun HomeContent(
+    modifier: Modifier = Modifier,
+    joke: Joke?
+) {
+    val breakpoint = rememberBreakpoint()
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(left = if (breakpoint > Breakpoint.MD) SIDE_PANEL_WIDTH.px else 0.px),
+        contentAlignment = Alignment.Center
+    ) {
+        joke?.let {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(topBottom = 50.px),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(joke.id != -1) {
+                    Image(
+                        src = Res.Image.laugh,
+                        description = "Laugh",
+                        modifier = Modifier
+                            .size(150.px)
+                            .margin(bottom = 50.px)
+                    )
+                }
+                if(joke.joke.contains("Q:")) {
+                    SpanText(
+                        modifier = Modifier
+                            .margin(bottom = 14.px)
+                            .fillMaxWidth(40.percent)
+                            .textAlign(TextAlign.Center)
+                            .color(Theme.Secondary.rgb)
+                            .fontSize(28.px)
+                            .fontFamily(FONT_FAMILY)
+                            .fontWeight(FontWeight.Bold),
+                        text = joke.joke.split(":")[1].dropLast(1)
+                    )
+                    SpanText(
+                        modifier = Modifier
+                            .fillMaxWidth(40.percent)
+                            .textAlign(TextAlign.Center)
+                            .color(Theme.HalfBlack.rgb)
+                            .fontSize(20.px)
+                            .fontFamily(FONT_FAMILY)
+                            .fontWeight(FontWeight.Normal),
+                        text = joke.joke.split(":").last()
+                    )
+                } else {
+                    SpanText(
+                        modifier = Modifier
+                            .margin(bottom = 14.px)
+                            .fillMaxWidth(40.percent)
+                            .textAlign(TextAlign.Center)
+                            .color(Theme.Secondary.rgb)
+                            .fontFamily(FONT_FAMILY)
+                            .fontSize(28.px)
+                            .fontWeight(FontWeight.Bold),
+                        text = joke.joke
+                    )
+                }
+            }
+        }
     }
 }
 
