@@ -1,6 +1,7 @@
 package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
+import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.SidePanel
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
@@ -23,17 +24,7 @@ fun MyPostsPage() {
 
 @Composable
 fun MyPostsScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .maxWidth(PAGE_WIDTH.px)
-        ) {
-            SidePanel(onMenuClick = {})
-        }
+    AdminPageLayout {
+
     }
 }

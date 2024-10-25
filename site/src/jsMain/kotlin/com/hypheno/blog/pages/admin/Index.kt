@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.OverflowSidePanel
 import com.hypheno.blog.components.SidePanel
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
@@ -28,25 +29,7 @@ fun HomePage(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeScreen() {
-    var overflowMenuOpened by remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .maxWidth(PAGE_WIDTH.px)
-        ) {
-            SidePanel(onMenuClick = {
-                overflowMenuOpened = true
-            })
-            if(overflowMenuOpened) {
-                OverflowSidePanel(onMenuClose = {
-                    overflowMenuOpened = false
-                })
-            }
-        }
+    AdminPageLayout {
+
     }
 }
