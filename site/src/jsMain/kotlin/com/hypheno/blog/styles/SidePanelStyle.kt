@@ -1,6 +1,9 @@
 package com.hypheno.blog.styles
 
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.util.Id.navigationText
+import com.hypheno.blog.util.Id.svgParent
+import com.hypheno.blog.util.Id.vectorIcon
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -11,7 +14,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import org.jetbrains.compose.web.css.ms
 
 val NavigationItemStyle by ComponentStyle {
-    cssRule(" > #svgParent > #vectorIcon") {
+    cssRule(" > #${svgParent} > #${vectorIcon}") {
         Modifier
             .transition(
                 CSSTransition(
@@ -23,12 +26,12 @@ val NavigationItemStyle by ComponentStyle {
                 property("stroke", Theme.White.hex)
             }
     }
-    cssRule(":hover > #svgParent > #vectorIcon") {
+    cssRule(":hover > #${svgParent} > #${vectorIcon}") {
         Modifier.styleModifier {
             property("stroke", Theme.Primary.hex)
         }
     }
-    cssRule(" > #navigationText") {
+    cssRule(" > #${navigationText}") {
         Modifier
             .transition(
                 CSSTransition(
@@ -38,7 +41,7 @@ val NavigationItemStyle by ComponentStyle {
             )
             .color(Theme.White.rgb)
     }
-    cssRule(":hover > #navigationText") {
+    cssRule(":hover > #${navigationText}") {
         Modifier.color(Theme.Primary.rgb)
     }
 }

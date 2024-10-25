@@ -2,9 +2,13 @@ package com.hypheno.blog.components
 
 import androidx.compose.runtime.Composable
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.NavigationItemStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
+import com.hypheno.blog.util.Id.navigationText
+import com.hypheno.blog.util.Id.svgParent
+import com.hypheno.blog.util.Id.vectorIcon
 import com.hypheno.blog.util.Res
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.dom.svg.Path
@@ -30,6 +34,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
@@ -39,6 +44,7 @@ import org.jetbrains.compose.web.css.vh
 
 @Composable
 fun SidePanel(modifier: Modifier = Modifier) {
+    val context = rememberPageContext()
     Column(
         modifier = modifier
             .padding(leftRight = 40.px, topBottom = 50.px)
@@ -65,7 +71,7 @@ fun SidePanel(modifier: Modifier = Modifier) {
 
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
-            selected = true,
+            selected = context.route.path == Screen.AdminHome.route,
             title = "Home",
             icon = Res.PathIcon.home,
             onClick = {}
@@ -74,6 +80,7 @@ fun SidePanel(modifier: Modifier = Modifier) {
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
             title = "Create Post",
+            selected = context.route.path == Screen.AdminCreate.route,
             icon = Res.PathIcon.create,
             onClick = {}
         )
@@ -81,6 +88,7 @@ fun SidePanel(modifier: Modifier = Modifier) {
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
             title = "My Posts",
+            selected = context.route.path == Screen.AdminMyPosts.route,
             icon = Res.PathIcon.posts,
             onClick = {}
         )
@@ -116,7 +124,7 @@ fun NavigationItem(
         SpanText(
             text = title,
             modifier = Modifier
-                .id("navigationText")
+                .id(navigationText)
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
                 .thenIf(
@@ -135,7 +143,7 @@ fun VectorIcon(
 ) {
     Svg(
         attrs = modifier
-            .id("svgParent")
+            .id(svgParent)
             .width(24.px)
             .height(24.px)
             .toAttrs {
@@ -145,7 +153,7 @@ fun VectorIcon(
     ) {
         Path(
             attrs = Modifier
-                .id("vectorIcon")
+                .id(vectorIcon)
                 .thenIf(
                     condition = selected,
                     other = Modifier.styleModifier {

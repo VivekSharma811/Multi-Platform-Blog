@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.models.User
 import com.hypheno.blog.models.UserSecured
+import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.LoginInputStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Id.passwordInput
@@ -162,7 +163,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                                 )
                                 if(user != null) {
                                     rememberUserSession(true, user)
-                                    context.router.navigateTo("/admin")
+                                    context.router.navigateTo(Screen.AdminHome.route)
                                 } else {
                                     errorText = "User does not exist"
                                 }
