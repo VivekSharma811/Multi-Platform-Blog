@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.NavigationItemStyle
+import com.hypheno.blog.util.Constants.COLLAPSED_PANEL_HEIGHT
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id.navigationText
@@ -19,9 +20,11 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.height
@@ -37,14 +40,30 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.icons.fa.FaBars
+import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 @Composable
-fun SidePanel(modifier: Modifier = Modifier) {
+fun SidePanel(
+    onMenuClick: () -> Unit
+) {
+    val breakpoint = rememberBreakpoint()
+    if(breakpoint > Breakpoint.MD) {
+        VerticalPanel()
+    } else {
+        CollapsedSidePanel(onMenuClick = onMenuClick)
+    }
+}
+
+@Composable
+private fun VerticalPanel(modifier: Modifier = Modifier) {
     val context = rememberPageContext()
     Column(
         modifier = modifier
@@ -176,6 +195,36 @@ fun VectorIcon(
                     attr("stroke-linecap", "round")
                     attr("stroke-linejoin", "round")
                 }
+        )
+    }
+}
+
+@Composable
+private fun CollapsedSidePanel(
+    modifier: Modifier = Modifier,
+    onMenuClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(COLLAPSED_PANEL_HEIGHT.px)
+            .padding(leftRight = 25.px)
+            .backgroundColor(Theme.Secondary.rgb),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FaBars(
+            size = IconSize.XL,
+            modifier = Modifier
+                .margin(right = 24.px)
+                .color(Colors.White)
+                .cursor(Cursor.Pointer)
+                .onClick { onMenuClick() }
+        )
+        Image(
+            src = Res.Image.logo,
+            description = "Logo",
+            modifier = Modifier
+                .width(80.px)
         )
     }
 }
