@@ -1,15 +1,24 @@
 package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
-import com.hypheno.blog.models.Joke
+import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.util.Constants.FONT_FAMILY
+import com.hypheno.blog.util.Constants.HUMOR_API_URL
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.Res
+import com.varabyte.kobweb.browser.api
+import com.varabyte.kobweb.browser.http.http
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -45,10 +54,17 @@ import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.localStorage
+import kotlinx.browser.window
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.w3c.dom.get
+import org.w3c.dom.set
+import kotlin.js.Date
 
 @Page
 @Composable
@@ -60,8 +76,52 @@ fun HomePage(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeScreen() {
+    val scope = rememberCoroutineScope()
+    var randomJoke: RandomJoke? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        val date = localStorage["date"]
+        if(date != null) {
+            val difference = (Date.now() - date.toDouble())
+            val hasDayPassed = difference >= 86400000
+            if(hasDayPassed) {
+                scope.launch {
+                    try {
+                        val result = window.http.get(HUMOR_API_URL).decodeToString()
+                        randomJoke = Json.decodeFromString(result)
+                        localStorage["date"] = Date.now().toString()
+                        localStorage["joke"] = result
+                    } catch (e: Exception) {
+                        println(e.message)
+                        randomJoke = RandomJoke(id = -1, "Unexpected error")
+                    }
+                }
+            } else {
+                try {
+                    randomJoke =
+                        localStorage["joke"]?.let { Json.decodeFromString(it) }
+                } catch (e: Exception) {
+                    println(e.message)
+                    randomJoke = RandomJoke(id = -1, "Unexpected error")
+                }
+            }
+        } else {
+            scope.launch {
+                try {
+                    val result = window.http.get(HUMOR_API_URL).decodeToString()
+                    randomJoke = Json.decodeFromString(result)
+                    localStorage["date"] = Date.now().toString()
+                    localStorage["joke"] = result
+                } catch (e: Exception) {
+                    println(e.message)
+                    randomJoke = RandomJoke(id = -1, "Unexpected error")
+                }
+            }
+        }
+    }
+
     AdminPageLayout {
-        HomeContent(joke = Joke(id = 1, joke = "Joke:Joke"))
+        HomeContent(randomJoke = randomJoke)
         AddButton()
     }
 }
@@ -69,16 +129,17 @@ fun HomeScreen() {
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    joke: Joke?
+    randomJoke: RandomJoke?
 ) {
     val breakpoint = rememberBreakpoint()
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .padding(left = if (breakpoint > Breakpoint.MD) SIDE_PANEL_WIDTH.px else 0.px),
         contentAlignment = Alignment.Center
     ) {
-        joke?.let {
+        randomJoke?.let {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -86,7 +147,7 @@ fun HomeContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if(joke.id != -1) {
+                if(randomJoke.id != -1) {
                     Image(
                         src = Res.Image.laugh,
                         description = "Laugh",
@@ -95,7 +156,7 @@ fun HomeContent(
                             .margin(bottom = 50.px)
                     )
                 }
-                if(joke.joke.contains("Q:")) {
+                if(randomJoke.joke.contains("Q:")) {
                     SpanText(
                         modifier = Modifier
                             .margin(bottom = 14.px)
@@ -105,7 +166,7 @@ fun HomeContent(
                             .fontSize(28.px)
                             .fontFamily(FONT_FAMILY)
                             .fontWeight(FontWeight.Bold),
-                        text = joke.joke.split(":")[1].dropLast(1)
+                        text = randomJoke.joke.split(":")[1].dropLast(1)
                     )
                     SpanText(
                         modifier = Modifier
@@ -115,7 +176,7 @@ fun HomeContent(
                             .fontSize(20.px)
                             .fontFamily(FONT_FAMILY)
                             .fontWeight(FontWeight.Normal),
-                        text = joke.joke.split(":").last()
+                        text = randomJoke.joke.split(":").last()
                     )
                 } else {
                     SpanText(
@@ -127,7 +188,7 @@ fun HomeContent(
                             .fontFamily(FONT_FAMILY)
                             .fontSize(28.px)
                             .fontWeight(FontWeight.Bold),
-                        text = joke.joke
+                        text = randomJoke.joke
                     )
                 }
             }
