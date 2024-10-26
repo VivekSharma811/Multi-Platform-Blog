@@ -11,17 +11,16 @@ import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.Posts
 import com.hypheno.blog.components.SearchBar
-import com.hypheno.blog.components.SidePanel
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.util.Constants.FONT_FAMILY
-import com.hypheno.blog.util.Constants.PAGE_WIDTH
 import com.hypheno.blog.util.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.fetchMyPosts
 import com.hypheno.blog.util.noBorder
+import com.hypheno.blog.util.parseSwitchText
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -40,7 +39,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -68,10 +66,11 @@ fun MyPostsScreen() {
     val breakpoint = rememberBreakpoint()
     val scope = rememberCoroutineScope()
     val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    val selectedPosts = remember { mutableStateListOf<String>() }
     var postsToSkip by remember { mutableStateOf(0) }
     var showMoreVisibility by remember { mutableStateOf(false) }
     var selectable by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf("Select") }
+    var switchText by remember { mutableStateOf("Select") }
 
     LaunchedEffect(Unit) {
         fetchMyPosts(
@@ -125,11 +124,19 @@ fun MyPostsScreen() {
                         modifier = Modifier.margin(right = 8.px),
                         size = SwitchSize.LG,
                         checked = selectable,
-                        onCheckedChange = { selectable = it }
+                        onCheckedChange = {
+                            selectable = it
+                            if (!selectable) {
+                                switchText = "Select"
+                                selectedPosts.clear()
+                            } else {
+                                switchText = "0 Posts Selected"
+                            }
+                        }
                     )
                     SpanText(
                         modifier = Modifier.color(if (selectable) Colors.Black else Theme.HalfBlack.rgb),
-                        text = text
+                        text = switchText
                     )
                 }
                 Button(
@@ -160,10 +167,11 @@ fun MyPostsScreen() {
                             skip = postsToSkip,
                             onSuccess = {
                                 if (it is ApiListResponse.Success) {
-                                    if(it.data.isNotEmpty()) {
+                                    if (it.data.isNotEmpty()) {
                                         myPosts.addAll(it.data)
                                         postsToSkip += POSTS_PER_PAGE
-                                        if(it.data.size < POSTS_PER_PAGE) showMoreVisibility = false
+                                        if (it.data.size < POSTS_PER_PAGE) showMoreVisibility =
+                                            false
                                     } else {
                                         showMoreVisibility = false
                                     }
@@ -175,7 +183,16 @@ fun MyPostsScreen() {
                         )
                     }
                 },
-                posts = myPosts
+                posts = myPosts,
+                selectable = selectable,
+                onSelect = {
+                    selectedPosts.add(it)
+                    switchText = parseSwitchText(selectedPosts.toList())
+                },
+                onDeselect = {
+                    selectedPosts.remove(it)
+                    switchText = parseSwitchText(selectedPosts.toList())
+                },
             )
         }
     }
