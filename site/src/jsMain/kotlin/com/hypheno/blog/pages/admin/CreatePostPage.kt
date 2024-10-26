@@ -7,8 +7,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
+import com.hypheno.blog.components.LinkPopup
 import com.hypheno.blog.components.MessagePopup
 import com.hypheno.blog.models.Category
+import com.hypheno.blog.models.ControlStyle
 import com.hypheno.blog.models.EditorControl
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.Theme
@@ -20,6 +22,8 @@ import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.addPost
 import com.hypheno.blog.util.applyControlStyle
+import com.hypheno.blog.util.applyStyle
+import com.hypheno.blog.util.getSelectedText
 import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
@@ -103,7 +107,8 @@ data class CreatePageUiState(
     var main: Boolean = false,
     var sponsored: Boolean = false,
     var editorVisibility: Boolean = true,
-    var messagePopup: Boolean = false
+    var messagePopup: Boolean = false,
+    var linkPopup: Boolean = false
 )
 
 @Page(routeOverride = "create")
@@ -282,6 +287,9 @@ fun CreatePostScreen() {
                 EditorControls(
                     breakpoint = breakpoint,
                     editorVisibility = uiState.editorVisibility,
+                    onLinkClick = {
+                        uiState = uiState.copy(linkPopup = true)
+                    },
                     onPreviewClicked = {
                         uiState = uiState.copy(
                             editorVisibility = uiState.editorVisibility.not()
@@ -349,6 +357,20 @@ fun CreatePostScreen() {
             onDialogDismiss = { uiState = uiState.copy(messagePopup = false) }
         )
     }
+    if (uiState.linkPopup) {
+        LinkPopup(
+            onDialogDismiss = { uiState = uiState.copy(linkPopup = false) },
+            onLinkAdded = { href, title ->
+                applyStyle(
+                    ControlStyle.Link(
+                        selectedText = getSelectedText(),
+                        href = href,
+                        title = title
+                    )
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -356,6 +378,7 @@ fun EditorControls(
     modifier: Modifier = Modifier,
     breakpoint: Breakpoint,
     editorVisibility: Boolean,
+    onLinkClick: () -> Unit,
     onPreviewClicked: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -372,7 +395,12 @@ fun EditorControls(
                 EditorControl.entries.forEach {
                     EditorControlView(
                         control = it,
-                        onClick = { applyControlStyle(it) }
+                        onClick = {
+                            applyControlStyle(
+                                editorControl = it,
+                                onLinkClick = onLinkClick
+                            )
+                        }
                     )
                 }
             }
