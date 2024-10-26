@@ -1,6 +1,7 @@
 package com.hypheno.blog.data
 
 import com.hypheno.blog.models.Post
+import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
 
 interface MongoRepository {
@@ -9,4 +10,6 @@ interface MongoRepository {
     suspend fun checkUserId(id: String): Boolean
 
     suspend fun addPost(post: Post): Boolean
+
+    suspend fun readMyPosts(skip: Int, author: String): List<PostWithoutDetails>
 }

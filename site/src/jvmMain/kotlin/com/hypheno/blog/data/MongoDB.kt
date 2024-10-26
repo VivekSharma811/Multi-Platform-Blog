@@ -1,8 +1,10 @@
 package com.hypheno.blog.data
 
 import com.hypheno.blog.models.Post
+import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
 import com.hypheno.blog.util.Constants.DATABASE_NAME
+import com.hypheno.blog.util.Constants.POSTS_PER_PAGE
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.and
 import com.varabyte.kobweb.api.data.add
@@ -10,6 +12,8 @@ import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import org.litote.kmongo.MongoOperator
+import org.litote.kmongo.coroutine.toList
+import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
@@ -57,5 +61,15 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
 
     override suspend fun addPost(post: Post): Boolean {
         return postCollection.insertOne(post).awaitFirst().wasAcknowledged()
+    }
+
+    override suspend fun readMyPosts(skip: Int, author: String): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::author eq author)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
+            .toList()
     }
 }

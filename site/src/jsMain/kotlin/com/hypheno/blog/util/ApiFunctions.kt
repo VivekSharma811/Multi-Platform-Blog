@@ -1,5 +1,6 @@
 package com.hypheno.blog.util
 
+import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.User
@@ -84,6 +85,21 @@ suspend fun addPost(post: Post): Boolean {
     } catch (e: Exception) {
         println(e.message.toString())
         false
+    }
+}
+
+suspend fun fetchMyPosts(
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(
+            apiPath = "readmyposts?skip=$skip&author=${localStorage["username"]}"
+        )?.decodeToString()
+        onSuccess(Json.decodeFromString(result.toString()))
+    } catch (e: Exception) {
+        onError(e)
     }
 }
 
