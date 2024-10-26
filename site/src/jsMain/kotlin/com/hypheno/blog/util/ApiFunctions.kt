@@ -1,10 +1,12 @@
 package com.hypheno.blog.util
 
 import com.hypheno.blog.models.ApiListResponse
+import com.hypheno.blog.models.ApiResponse
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.User
 import com.hypheno.blog.models.UserSecured
+import com.hypheno.blog.util.Constants.POST_ID_PARAM
 import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.browser.http.http
 import kotlinx.browser.localStorage
@@ -129,6 +131,21 @@ suspend fun searchPostsByTitle(
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {
         onError(e)
+    }
+}
+
+suspend fun fetchSelectedPost(id: String): ApiResponse {
+    return try {
+        val result = window.api.tryGet(
+            apiPath = "readselectedpost?${POST_ID_PARAM}=$id"
+        )?.decodeToString()
+        if (result != null) {
+            Json.decodeFromString<ApiResponse>(result)
+        } else {
+            ApiResponse.Error(message = "Result is null")
+        }
+    } catch (e: Exception) {
+        ApiResponse.Error(message = e.message.toString())
     }
 }
 

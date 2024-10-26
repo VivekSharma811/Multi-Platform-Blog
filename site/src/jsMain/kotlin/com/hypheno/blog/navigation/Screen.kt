@@ -1,11 +1,14 @@
 package com.hypheno.blog.navigation
 
+import com.hypheno.blog.util.Constants.POST_ID_PARAM
 import com.hypheno.blog.util.Constants.QUERY_PARAM
 
 sealed class Screen(val route: String) {
     object AdminHome : Screen(route = "/admin/")
     object AdminLogin : Screen(route = "/admin/login")
-    object AdminCreate : Screen(route = "/admin/create")
+    object AdminCreate : Screen(route = "/admin/create") {
+        fun passPostId(id: String) = "/admin/create?${POST_ID_PARAM}=$id"
+    }
     object AdminMyPosts : Screen(route = "/admin/myposts") {
         fun searchByTitle(query: String) = "/admin/myposts?${QUERY_PARAM}=$query"
     }

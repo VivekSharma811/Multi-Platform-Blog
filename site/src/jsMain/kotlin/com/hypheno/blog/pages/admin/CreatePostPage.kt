@@ -1,6 +1,7 @@
 package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -9,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.ControlPopup
 import com.hypheno.blog.components.MessagePopup
+import com.hypheno.blog.models.ApiResponse
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.ControlStyle
 import com.hypheno.blog.models.EditorControl
@@ -17,12 +19,14 @@ import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.EditorKeyStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
+import com.hypheno.blog.util.Constants.POST_ID_PARAM
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.addPost
 import com.hypheno.blog.util.applyControlStyle
 import com.hypheno.blog.util.applyStyle
+import com.hypheno.blog.util.fetchSelectedPost
 import com.hypheno.blog.util.getEditor
 import com.hypheno.blog.util.getSelectedText
 import com.hypheno.blog.util.noBorder
@@ -128,6 +132,19 @@ fun CreatePostScreen() {
     val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
+
+    val hasPostIdParam = remember(key1 = context.route) {
+        context.route.params.containsKey(POST_ID_PARAM)
+    }
+    LaunchedEffect(hasPostIdParam) {
+        if(hasPostIdParam) {
+            val postId = context.route.params.getValue(POST_ID_PARAM)
+            val response = fetchSelectedPost(id = postId)
+            if(response is ApiResponse.Success) {
+            }
+        }
+    }
+
     AdminPageLayout {
         Box(
             modifier = Modifier

@@ -93,4 +93,8 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
             .limit(POSTS_PER_PAGE)
             .toList()
     }
+
+    override suspend fun readSelectedPost(id: String): Post {
+        return postCollection.find(Post::id eq id).toList().first()
+    }
 }
