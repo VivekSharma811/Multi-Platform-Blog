@@ -13,3 +13,13 @@ expect class Post {
     val isMain: Boolean
     val isSponsored: Boolean
 }
+
+expect class PostWithoutDetails {
+    val id: String
+    val author: String
+    val date: Long
+    val title: String
+    val subtitle: String
+    val thumbnail: String
+    val category: Category
+}
