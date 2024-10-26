@@ -81,6 +81,20 @@ import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.HTMLInputElement
 
+data class CreatePageUiState(
+    var id: String = "",
+    var title: String = "",
+    var subtitle: String = "",
+    var thumbnail: String = "",
+    var thumbnailInputDisabled: Boolean = true,
+    var content: String = "",
+    var category: Category = Category.Programming,
+    var popular: Boolean = false,
+    var main: Boolean = false,
+    var sponsored: Boolean = false,
+    var editorVisibility: Boolean = true
+)
+
 @Page(routeOverride = "create")
 @Composable
 fun CreatePostPage() {
@@ -92,13 +106,7 @@ fun CreatePostPage() {
 @Composable
 fun CreatePostScreen() {
     val breakpoint = rememberBreakpoint()
-    var popularSwitch by remember { mutableStateOf(false) }
-    var mainSwitch by remember { mutableStateOf(false) }
-    var sponsoredSwitch by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf(Category.Technology) }
-    var thumbnail by remember { mutableStateOf("") }
-    var thumbnailDisabled by remember { mutableStateOf(false) }
-    var editorVisibility by remember { mutableStateOf(true) }
+    var uiState by remember { mutableStateOf(CreatePageUiState()) }
     AdminPageLayout {
         Box(
             modifier = Modifier
@@ -125,8 +133,10 @@ fun CreatePostScreen() {
                     ) {
                         Switch(
                             modifier = Modifier.margin(right = 8.px),
-                            checked = popularSwitch,
-                            onCheckedChange = { popularSwitch = it },
+                            checked = uiState.popular,
+                            onCheckedChange = {
+                                uiState = uiState.copy(popular = it)
+                            },
                             size = SwitchSize.LG
                         )
                         SpanText(
@@ -147,8 +157,10 @@ fun CreatePostScreen() {
                     ) {
                         Switch(
                             modifier = Modifier.margin(right = 8.px),
-                            checked = mainSwitch,
-                            onCheckedChange = { mainSwitch = it },
+                            checked = uiState.main,
+                            onCheckedChange = {
+                                uiState = uiState.copy(main = it)
+                            },
                             size = SwitchSize.LG
                         )
                         SpanText(
@@ -166,8 +178,10 @@ fun CreatePostScreen() {
                     ) {
                         Switch(
                             modifier = Modifier.margin(right = 8.px),
-                            checked = sponsoredSwitch,
-                            onCheckedChange = { sponsoredSwitch = it },
+                            checked = uiState.sponsored,
+                            onCheckedChange = {
+                                uiState = uiState.copy(sponsored = it)
+                            },
                             size = SwitchSize.LG
                         )
                         SpanText(
@@ -215,8 +229,10 @@ fun CreatePostScreen() {
                         }
                 )
                 CategoryDropdown(
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
+                    selectedCategory = uiState.category,
+                    onCategorySelected = {
+                        uiState = uiState.copy(category = it)
+                    }
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth()
@@ -226,8 +242,8 @@ fun CreatePostScreen() {
                 ) {
                     Switch(
                         modifier = Modifier.margin(right = 8.px),
-                        checked = thumbnailDisabled.not(),
-                        onCheckedChange = { thumbnailDisabled = it.not() },
+                        checked = uiState.thumbnailInputDisabled.not(),
+                        onCheckedChange = { uiState = uiState.copy(thumbnailInputDisabled = it.not()) },
                         size = SwitchSize.MD
                     )
                     SpanText(
@@ -239,22 +255,24 @@ fun CreatePostScreen() {
                     )
                 }
                 ThumbnailUploader(
-                    thumbnail = thumbnail,
-                    thumbnailInputDisabled = thumbnailDisabled,
+                    thumbnail = uiState.thumbnail,
+                    thumbnailInputDisabled = uiState.thumbnailInputDisabled,
                     onThumbnailSelect = { filename, file ->
                         (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value =
                             filename
-                        thumbnail = file
+                        uiState = uiState.copy(thumbnail = filename)
                     }
                 )
                 EditorControls(
                     breakpoint = breakpoint,
-                    editorVisibility = editorVisibility,
+                    editorVisibility = uiState.editorVisibility,
                     onPreviewClicked = {
-                        editorVisibility = editorVisibility.not()
+                        uiState = uiState.copy(
+                            editorVisibility = uiState.editorVisibility.not()
+                        )
                     }
                 )
-                Editor(editorVisibility)
+                Editor(uiState.editorVisibility)
                 CreateButton(
                     text = "Create",
                     onClick = {}
