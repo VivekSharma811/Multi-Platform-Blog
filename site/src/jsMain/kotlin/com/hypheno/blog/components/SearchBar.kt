@@ -54,7 +54,8 @@ fun SearchBar(onEnterClick: () -> Unit) {
         FaMagnifyingGlass(
             modifier = Modifier
                 .color(Theme.DarkGray.rgb)
-                .margin(right = 14.px),
+                .margin(right = 14.px)
+                .transition(CSSTransition(property = "color", duration = 200.ms)),
             size = IconSize.SM
         )
         Input(
