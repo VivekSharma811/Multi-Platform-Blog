@@ -9,6 +9,7 @@ object Constants {
     const val COLLAPSED_PANEL_HEIGHT = 100
     const val HUMOR_API_URL = "https://api.humorapi.com/jokes/random?api-key=cd2d03d86e1346ddbcd68f9252fc575f&max-length=180"
     const val POSTS_PER_PAGE = 8
+    const val QUERY_PARAM = "query"
 }
 
 object Res {
