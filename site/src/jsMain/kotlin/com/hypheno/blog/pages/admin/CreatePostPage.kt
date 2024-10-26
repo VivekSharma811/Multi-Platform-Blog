@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
+import com.hypheno.blog.components.MessagePopup
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.EditorKey
 import com.hypheno.blog.models.Post
@@ -70,6 +71,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
@@ -97,7 +99,8 @@ data class CreatePageUiState(
     var popular: Boolean = false,
     var main: Boolean = false,
     var sponsored: Boolean = false,
-    var editorVisibility: Boolean = true
+    var editorVisibility: Boolean = true,
+    var messagePopup: Boolean = false
 )
 
 @Page(routeOverride = "create")
@@ -321,12 +324,22 @@ fun CreatePostScreen() {
                                 }
                             }
                         } else {
-                            println("Please fill out all fields.")
+                            scope.launch {
+                                uiState = uiState.copy(messagePopup = true)
+                                delay(2000)
+                                uiState = uiState.copy(messagePopup = false)
+                            }
                         }
                     }
                 )
             }
         }
+    }
+    if(uiState.messagePopup) {
+        MessagePopup(
+            message = "Please fill out all fields.",
+            onDialogDismiss = { uiState = uiState.copy(messagePopup = false)}
+        )
     }
 }
 
