@@ -1,6 +1,7 @@
 package com.hypheno.blog.components
 
 import androidx.compose.runtime.Composable
+import com.hypheno.blog.models.EditorControl
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Id
@@ -77,9 +78,10 @@ fun MessagePopup(
 }
 
 @Composable
-fun LinkPopup(
+fun ControlPopup(
+    editorControl: EditorControl,
     onDialogDismiss: () -> Unit,
-    onLinkAdded: (String, String) -> Unit
+    onAddClicked: (String, String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -116,7 +118,10 @@ fun LinkPopup(
                     .borderRadius(r = 4.px)
                     .backgroundColor(Theme.LightGray.rgb)
                     .toAttrs {
-                        attr("placeholder", "Href")
+                        attr(
+                            "placeholder",
+                            if (editorControl == EditorControl.Link) "Href" else "Image URL"
+                        )
                     }
             )
             Input(
@@ -133,7 +138,10 @@ fun LinkPopup(
                     .borderRadius(r = 4.px)
                     .backgroundColor(Theme.LightGray.rgb)
                     .toAttrs {
-                        attr("placeholder", "Title")
+                        attr(
+                            "placeholder",
+                            if (editorControl == EditorControl.Link) "Title" else "Description"
+                        )
                     }
             )
             Button(
@@ -143,7 +151,7 @@ fun LinkPopup(
                             (document.getElementById(Id.linkHrefInput) as HTMLInputElement).value
                         val title =
                             (document.getElementById(Id.linkTitleInput) as HTMLInputElement).value
-                        onLinkAdded(href, title)
+                        onAddClicked(href, title)
                         onDialogDismiss()
                     }
                     .fillMaxWidth()

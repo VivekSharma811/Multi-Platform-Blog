@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
-import com.hypheno.blog.components.LinkPopup
+import com.hypheno.blog.components.ControlPopup
 import com.hypheno.blog.components.MessagePopup
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.ControlStyle
@@ -108,7 +108,8 @@ data class CreatePageUiState(
     var sponsored: Boolean = false,
     var editorVisibility: Boolean = true,
     var messagePopup: Boolean = false,
-    var linkPopup: Boolean = false
+    var linkPopup: Boolean = false,
+    var imagePopup: Boolean = false
 )
 
 @Page(routeOverride = "create")
@@ -290,6 +291,9 @@ fun CreatePostScreen() {
                     onLinkClick = {
                         uiState = uiState.copy(linkPopup = true)
                     },
+                    onImageClick = {
+                        uiState = uiState.copy(imagePopup = true)
+                    },
                     onPreviewClicked = {
                         uiState = uiState.copy(
                             editorVisibility = uiState.editorVisibility.not()
@@ -358,14 +362,30 @@ fun CreatePostScreen() {
         )
     }
     if (uiState.linkPopup) {
-        LinkPopup(
+        ControlPopup(
+            editorControl = EditorControl.Link,
             onDialogDismiss = { uiState = uiState.copy(linkPopup = false) },
-            onLinkAdded = { href, title ->
+            onAddClicked = { href, title ->
                 applyStyle(
                     ControlStyle.Link(
                         selectedText = getSelectedText(),
                         href = href,
                         title = title
+                    )
+                )
+            }
+        )
+    }
+    if (uiState.imagePopup) {
+        ControlPopup(
+            editorControl = EditorControl.Image,
+            onDialogDismiss = { uiState = uiState.copy(imagePopup = false) },
+            onAddClicked = { imageUrl, description ->
+                applyStyle(
+                    ControlStyle.Image(
+                        selectedText = getSelectedText(),
+                        imageUrl = imageUrl,
+                        desc = description
                     )
                 )
             }
@@ -379,6 +399,7 @@ fun EditorControls(
     breakpoint: Breakpoint,
     editorVisibility: Boolean,
     onLinkClick: () -> Unit,
+    onImageClick: () -> Unit,
     onPreviewClicked: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -398,7 +419,8 @@ fun EditorControls(
                         onClick = {
                             applyControlStyle(
                                 editorControl = it,
-                                onLinkClick = onLinkClick
+                                onLinkClick = onLinkClick,
+                                onImageClick = onImageClick
                             )
                         }
                     )
