@@ -98,6 +98,7 @@ fun CreatePostScreen() {
     var selectedCategory by remember { mutableStateOf(Category.Technology) }
     var thumbnail by remember { mutableStateOf("") }
     var thumbnailDisabled by remember { mutableStateOf(false) }
+    var editorVisibility by remember { mutableStateOf(true) }
     AdminPageLayout {
         Box(
             modifier = Modifier
@@ -247,7 +248,16 @@ fun CreatePostScreen() {
                     }
                 )
                 EditorControls(
-                    breakpoint = breakpoint
+                    breakpoint = breakpoint,
+                    editorVisibility = editorVisibility,
+                    onPreviewClicked = {
+                        editorVisibility = editorVisibility.not()
+                    }
+                )
+                Editor(editorVisibility)
+                CreateButton(
+                    text = "Create",
+                    onClick = {}
                 )
             }
         }
@@ -257,7 +267,9 @@ fun CreatePostScreen() {
 @Composable
 fun EditorControls(
     modifier: Modifier = Modifier,
-    breakpoint: Breakpoint
+    breakpoint: Breakpoint,
+    editorVisibility: Boolean,
+    onPreviewClicked: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
         SimpleGrid(
@@ -289,9 +301,16 @@ fun EditorControls(
                         )
                         .padding(leftRight = 24.px)
                         .borderRadius(r = 4.px)
-                        .backgroundColor(Theme.LightGray.rgb)
-                        .color(Theme.DarkGray.rgb)
+                        .backgroundColor(
+                            if (editorVisibility) Theme.LightGray.rgb
+                            else Theme.Primary.rgb
+                        )
+                        .color(
+                            if (editorVisibility) Theme.DarkGray.rgb
+                            else Colors.White
+                        )
                         .noBorder()
+                        .onClick { onPreviewClicked() }
                         .toAttrs()
                 ) {
                     SpanText(
@@ -323,6 +342,85 @@ fun EditorKeyView(
             src = key.icon,
             description = key.name
         )
+    }
+}
+
+@Composable
+fun Editor(editorVisibility: Boolean) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        TextArea(
+            attrs = Modifier
+                .id(Id.editor)
+                .fillMaxWidth()
+                .height(400.px)
+                .maxHeight(400.px)
+                .resize(Resize.None)
+                .margin(top = 8.px)
+                .padding(all = 20.px)
+                .backgroundColor(Theme.LightGray.rgb)
+                .borderRadius(r = 4.px)
+                .noBorder()
+                .visibility(
+                    if (editorVisibility) Visibility.Visible
+                    else Visibility.Hidden
+                )
+//                .onKeyDown {
+//                    if (it.code == "Enter" && it.shiftKey) {
+//                        applyStyle(
+//                            controlStyle = ControlStyle.Break(
+//                                selectedText = getSelectedText()
+//                            )
+//                        )
+//                    }
+//                }
+                .fontFamily(FONT_FAMILY)
+                .fontSize(16.px)
+                .toAttrs {
+                    attr("placeholder", "Type here...")
+                }
+        )
+        Div(
+            attrs = Modifier
+                .id(Id.editorPreview)
+                .fillMaxWidth()
+                .height(400.px)
+                .maxHeight(400.px)
+                .margin(top = 8.px)
+                .padding(all = 20.px)
+                .backgroundColor(Theme.LightGray.rgb)
+                .borderRadius(r = 4.px)
+                .visibility(
+                    if (editorVisibility) Visibility.Hidden
+                    else Visibility.Visible
+                )
+                .overflow(Overflow.Auto)
+                .scrollBehavior(ScrollBehavior.Smooth)
+                .noBorder()
+                .toAttrs()
+        )
+    }
+}
+
+@Composable
+fun CreateButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Button(
+        attrs = Modifier
+            .onClick { onClick() }
+            .fillMaxWidth()
+            .height(54.px)
+            .margin(top = 24.px)
+            .backgroundColor(Theme.Primary.rgb)
+            .color(Colors.White)
+            .borderRadius(r = 4.px)
+            .noBorder()
+            .fontFamily(FONT_FAMILY)
+            .fontSize(16.px)
+            .toAttrs()
+    ) {
+        SpanText(text = text)
     }
 }
 
