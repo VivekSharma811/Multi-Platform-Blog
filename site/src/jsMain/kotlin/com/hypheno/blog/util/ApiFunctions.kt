@@ -83,7 +83,7 @@ suspend fun addPost(post: Post): Boolean {
             body = Json.encodeToString(post).encodeToByteArray()
         )?.decodeToString().toBoolean()
     } catch (e: Exception) {
-        println(e.message.toString())
+        println(e.message)
         false
     }
 }
@@ -100,6 +100,19 @@ suspend fun fetchMyPosts(
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {
         onError(e)
+    }
+}
+
+suspend fun deleteSelectedPosts(ids: List<String>): Boolean {
+    return try {
+        val result = window.api.tryPost(
+            apiPath = "deleteselectedposts",
+            body = Json.encodeToString(ids).encodeToByteArray()
+        )?.decodeToString()
+        result.toBoolean()
+    } catch (e: Exception) {
+        println(e.message)
+        false
     }
 }
 
