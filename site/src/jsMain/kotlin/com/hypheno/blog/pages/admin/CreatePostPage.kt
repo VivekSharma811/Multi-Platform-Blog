@@ -23,6 +23,7 @@ import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.addPost
 import com.hypheno.blog.util.applyControlStyle
 import com.hypheno.blog.util.applyStyle
+import com.hypheno.blog.util.getEditor
 import com.hypheno.blog.util.getSelectedText
 import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
@@ -58,6 +59,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.resize
@@ -452,6 +454,7 @@ fun EditorControls(
                         .noBorder()
                         .onClick {
                             onPreviewClicked()
+                            document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
                             js("hljs.highlightAll()") as Unit
                         }
                         .toAttrs()
@@ -508,15 +511,15 @@ fun Editor(editorVisibility: Boolean) {
                     if (editorVisibility) Visibility.Visible
                     else Visibility.Hidden
                 )
-//                .onKeyDown {
-//                    if (it.code == "Enter" && it.shiftKey) {
-//                        applyStyle(
-//                            controlStyle = ControlStyle.Break(
-//                                selectedText = getSelectedText()
-//                            )
-//                        )
-//                    }
-//                }
+                .onKeyDown {
+                    if (it.code == "Enter" && it.shiftKey) {
+                        applyStyle(
+                            controlStyle = ControlStyle.Break(
+                                selectedText = getSelectedText()
+                            )
+                        )
+                    }
+                }
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
                 .toAttrs {
