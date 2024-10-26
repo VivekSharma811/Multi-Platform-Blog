@@ -450,7 +450,10 @@ fun EditorControls(
                             else Colors.White
                         )
                         .noBorder()
-                        .onClick { onPreviewClicked() }
+                        .onClick {
+                            onPreviewClicked()
+                            js("hljs.highlightAll()") as Unit
+                        }
                         .toAttrs()
                 ) {
                     SpanText(
