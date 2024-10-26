@@ -9,6 +9,7 @@ import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.EditorKey
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.styles.EditorKeyStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id
@@ -62,6 +63,7 @@ import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
+import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
@@ -278,6 +280,10 @@ fun EditorControls(
                 Button(
                     attrs = Modifier
                         .height(54.px)
+                        .thenIf(
+                            condition = breakpoint < Breakpoint.SM,
+                            other = Modifier.fillMaxWidth()
+                        )
                         .margin(
                             topBottom = if (breakpoint < Breakpoint.SM) 12.px else 0.px
                         )
@@ -303,11 +309,10 @@ fun EditorControls(
 
 @Composable
 fun EditorKeyView(
-    modifier: Modifier = Modifier,
     key: EditorKey
 ) {
     Box(
-        modifier = modifier
+        modifier = EditorKeyStyle.toModifier()
             .fillMaxHeight()
             .padding(leftRight = 12.px)
             .borderRadius(r = 4.px)
