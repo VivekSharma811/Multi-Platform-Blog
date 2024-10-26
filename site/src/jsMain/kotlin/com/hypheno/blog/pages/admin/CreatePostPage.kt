@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.models.Category
+import com.hypheno.blog.models.EditorKey
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
@@ -16,6 +17,10 @@ import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.Resize
+import com.varabyte.kobweb.compose.css.ScrollBehavior
+import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -39,14 +44,21 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.resize
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.text.SpanText
@@ -57,9 +69,11 @@ import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.HTMLInputElement
 
@@ -227,8 +241,54 @@ fun CreatePostScreen() {
                         thumbnail = file
                     }
                 )
+                EditorControls(
+
+                )
             }
         }
+    }
+}
+
+@Composable
+fun EditorControls(
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxWidth()) {
+        SimpleGrid(
+            modifier = Modifier.fillMaxWidth(),
+            numColumns = numColumns(base = 1, sm = 2)
+        ) {
+            Row(
+                modifier = Modifier
+                    .backgroundColor(Theme.LightGray.rgb)
+                    .borderRadius(r = 4.px)
+                    .height(54.px)
+            ) {
+                EditorKey.values().forEach {
+                    EditorKeyView(key = it)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditorKeyView(
+    modifier: Modifier = Modifier,
+    key: EditorKey
+) {
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .padding(leftRight = 12.px)
+            .borderRadius(r = 4.px)
+            .onClick {  },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            src = key.icon,
+            description = key.name
+        )
     }
 }
 
