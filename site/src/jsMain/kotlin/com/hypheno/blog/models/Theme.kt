@@ -48,4 +48,12 @@ enum class Theme(
         hex = "#8B6DFF",
         rgb = rgb(139, 109, 255)
     ),
+    Gray(
+        hex = "#E9E9E9",
+        rgb = rgb(233, 233, 233)
+    ),
+    DarkGray(
+        hex = "#646464",
+        rgb = rgb(100, 100, 100)
+    ),
 }
