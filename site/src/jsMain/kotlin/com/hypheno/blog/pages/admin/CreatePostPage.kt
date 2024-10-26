@@ -30,6 +30,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -66,6 +67,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button
@@ -109,7 +111,7 @@ fun CreatePostScreen() {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SimpleGrid(numColumns = numColumns(base = 1, sm = 3, )) {
+                SimpleGrid(numColumns = numColumns(base = 1, sm = 3)) {
                     Row(
                         modifier = Modifier
                             .margin(
@@ -214,7 +216,8 @@ fun CreatePostScreen() {
                     onCategorySelected = { selectedCategory = it }
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().margin(topBottom = 12.px),
+                    modifier = Modifier.fillMaxWidth()
+                        .margin(topBottom = 12.px),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -242,7 +245,7 @@ fun CreatePostScreen() {
                     }
                 )
                 EditorControls(
-
+                    breakpoint = breakpoint
                 )
             }
         }
@@ -251,7 +254,8 @@ fun CreatePostScreen() {
 
 @Composable
 fun EditorControls(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    breakpoint: Breakpoint
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
         SimpleGrid(
@@ -264,8 +268,33 @@ fun EditorControls(
                     .borderRadius(r = 4.px)
                     .height(54.px)
             ) {
-                EditorKey.values().forEach {
+                EditorKey.entries.forEach {
                     EditorKeyView(key = it)
+                }
+            }
+            Box(
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Button(
+                    attrs = Modifier
+                        .height(54.px)
+                        .margin(
+                            topBottom = if (breakpoint < Breakpoint.SM) 12.px else 0.px
+                        )
+                        .padding(leftRight = 24.px)
+                        .borderRadius(r = 4.px)
+                        .backgroundColor(Theme.LightGray.rgb)
+                        .color(Theme.DarkGray.rgb)
+                        .noBorder()
+                        .toAttrs()
+                ) {
+                    SpanText(
+                        text = "Preview",
+                        modifier = Modifier
+                            .fontFamily(FONT_FAMILY)
+                            .fontWeight(FontWeight.Medium)
+                            .fontSize(14.px)
+                    )
                 }
             }
         }
@@ -282,7 +311,7 @@ fun EditorKeyView(
             .fillMaxHeight()
             .padding(leftRight = 12.px)
             .borderRadius(r = 4.px)
-            .onClick {  },
+            .onClick { },
         contentAlignment = Alignment.Center
     ) {
         Image(
