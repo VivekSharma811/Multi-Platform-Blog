@@ -1,5 +1,6 @@
 package com.hypheno.blog.data
 
+import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.User
 import com.hypheno.blog.util.Constants.DATABASE_NAME
 import com.mongodb.client.model.Filters
@@ -27,6 +28,7 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
     private val client = KMongo.createClient()
     private val database = client.getDatabase(DATABASE_NAME)
     private val userCollection = database.getCollection<User>()
+    private val postCollection = database.getCollection<Post>()
 
     override suspend fun checkUserExistence(user: User): User? {
         return try {
@@ -51,5 +53,9 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
             context.logger.error(e.message.toString())
             false
         }
+    }
+
+    override suspend fun addPost(post: Post): Boolean {
+        return postCollection.insertOne(post).awaitFirst().wasAcknowledged()
     }
 }
