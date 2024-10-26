@@ -1,18 +1,24 @@
 package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
+import com.hypheno.blog.components.Posts
 import com.hypheno.blog.components.SearchBar
 import com.hypheno.blog.components.SidePanel
+import com.hypheno.blog.models.ApiListResponse
+import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.IsUserLoggedIn
+import com.hypheno.blog.util.fetchMyPosts
 import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -59,6 +65,21 @@ fun MyPostsScreen() {
     val breakpoint = rememberBreakpoint()
     var selectable by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("Select") }
+    val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+
+    LaunchedEffect(Unit) {
+        fetchMyPosts(
+            skip = 0,
+            onSuccess = {
+                if(it is ApiListResponse.Success) {
+                    myPosts.addAll(it.data)
+                }
+            },
+            onError = {
+                println(it)
+            }
+        )
+    }
 
     AdminPageLayout {
         Column(
@@ -117,6 +138,7 @@ fun MyPostsScreen() {
                     SpanText(text = "Delete")
                 }
             }
+            Posts(posts = myPosts)
         }
     }
 }

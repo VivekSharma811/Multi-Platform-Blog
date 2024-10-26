@@ -21,6 +21,7 @@ import org.jetbrains.compose.web.css.px
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.get
 import org.w3c.dom.set
+import kotlin.js.Date
 
 @Composable
 fun IsUserLoggedIn(content: @Composable () -> Unit) {
@@ -150,3 +151,5 @@ fun applyControlStyle(
         EditorControl.Image -> onImageClick()
     }
 }
+
+fun Long.parseDateString() = Date(this).toLocaleDateString()
