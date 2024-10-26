@@ -2,7 +2,7 @@ package com.hypheno.blog.models
 
 import com.hypheno.blog.util.Res
 
-enum class EditorKey(
+enum class EditorControl(
     val icon: String
 ) {
     Bold(icon = Res.Icon.bold),

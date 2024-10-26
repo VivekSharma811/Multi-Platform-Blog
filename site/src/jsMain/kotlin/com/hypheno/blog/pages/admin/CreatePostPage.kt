@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.components.MessagePopup
 import com.hypheno.blog.models.Category
-import com.hypheno.blog.models.EditorKey
+import com.hypheno.blog.models.EditorControl
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
@@ -19,6 +19,7 @@ import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.IsUserLoggedIn
 import com.hypheno.blog.util.addPost
+import com.hypheno.blog.util.applyControlStyle
 import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
@@ -299,7 +300,11 @@ fun CreatePostScreen() {
                             uiState.copy(content = (document.getElementById(Id.editor) as HTMLTextAreaElement).value)
                         if (!uiState.thumbnailInputDisabled) {
                             uiState =
-                                uiState.copy(thumbnail = (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value)
+                                uiState.copy(
+                                    thumbnail = (document.getElementById(
+                                        Id.thumbnailInput
+                                    ) as HTMLInputElement).value
+                                )
                         }
                         if (
                             uiState.title.isNotEmpty() &&
@@ -338,10 +343,10 @@ fun CreatePostScreen() {
             }
         }
     }
-    if(uiState.messagePopup) {
+    if (uiState.messagePopup) {
         MessagePopup(
             message = "Please fill out all fields.",
-            onDialogDismiss = { uiState = uiState.copy(messagePopup = false)}
+            onDialogDismiss = { uiState = uiState.copy(messagePopup = false) }
         )
     }
 }
@@ -364,8 +369,11 @@ fun EditorControls(
                     .borderRadius(r = 4.px)
                     .height(54.px)
             ) {
-                EditorKey.entries.forEach {
-                    EditorKeyView(key = it)
+                EditorControl.entries.forEach {
+                    EditorControlView(
+                        control = it,
+                        onClick = { applyControlStyle(it) }
+                    )
                 }
             }
             Box(
@@ -409,20 +417,21 @@ fun EditorControls(
 }
 
 @Composable
-fun EditorKeyView(
-    key: EditorKey
+fun EditorControlView(
+    control: EditorControl,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = EditorKeyStyle.toModifier()
             .fillMaxHeight()
             .padding(leftRight = 12.px)
             .borderRadius(r = 4.px)
-            .onClick { },
+            .onClick { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Image(
-            src = key.icon,
-            description = key.name
+            src = control.icon,
+            description = control.name
         )
     }
 }
