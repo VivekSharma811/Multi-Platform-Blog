@@ -15,7 +15,7 @@ actual data class Post(
     actual val thumbnail: String,
     actual val content: String,
     actual val category: Category,
-    actual val isPopular: Boolean,
-    actual val isMain: Boolean,
-    actual val isSponsored: Boolean
+    actual val isPopular: Boolean = false,
+    actual val isMain: Boolean = false,
+    actual val isSponsored: Boolean = false
 )
