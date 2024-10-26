@@ -16,6 +16,7 @@ import com.hypheno.blog.util.Id.passwordInput
 import com.hypheno.blog.util.Id.usernameInput
 import com.hypheno.blog.util.Res
 import com.hypheno.blog.util.checkUserExistence
+import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -135,16 +136,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     .fontWeight(FontWeight.Medium)
                     .fontSize(14.px)
                     .fontFamily(FONT_FAMILY)
-                    .border(
-                        width = 0.px,
-                        style = LineStyle.None,
-                        color = Colors.Transparent
-                    )
-                    .outline(
-                        width = 0.px,
-                        style = LineStyle.None,
-                        color = Colors.Transparent
-                    )
+                    .noBorder()
                     .cursor(Cursor.Pointer)
                     .onClick {
                         scope.launch {
