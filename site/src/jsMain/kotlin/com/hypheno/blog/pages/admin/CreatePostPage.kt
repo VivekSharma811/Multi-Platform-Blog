@@ -12,6 +12,7 @@ import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.EditorKey
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.EditorKeyStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
@@ -60,6 +61,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.graphics.Image
@@ -114,6 +116,7 @@ fun CreatePostPage() {
 @Composable
 fun CreatePostScreen() {
     val scope = rememberCoroutineScope()
+    val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
     AdminPageLayout {
@@ -320,7 +323,7 @@ fun CreatePostScreen() {
                                     )
                                 )
                                 if (result) {
-                                    println("Successful!")
+                                    context.router.navigateTo(Screen.AdminSuccess.route)
                                 }
                             }
                         } else {
