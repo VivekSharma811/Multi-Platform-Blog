@@ -1,5 +1,6 @@
 package com.hypheno.blog.util
 
+import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.User
 import com.hypheno.blog.models.UserSecured
@@ -71,6 +72,18 @@ suspend fun fetchRandomJoke(onComplete: (RandomJoke) -> Unit) {
             onComplete(RandomJoke(id = -1, joke = e.message.toString()))
             println(e.message)
         }
+    }
+}
+
+suspend fun addPost(post: Post): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "addpost",
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().toBoolean()
+    } catch (e: Exception) {
+        println(e.message.toString())
+        false
     }
 }
 

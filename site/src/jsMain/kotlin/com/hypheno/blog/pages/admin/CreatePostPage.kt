@@ -4,16 +4,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.EditorKey
+import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.styles.EditorKeyStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.IsUserLoggedIn
+import com.hypheno.blog.util.addPost
 import com.hypheno.blog.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
@@ -68,6 +71,8 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
+import kotlinx.browser.localStorage
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
@@ -80,6 +85,9 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
+import org.w3c.dom.get
+import kotlin.js.Date
 
 data class CreatePageUiState(
     var id: String = "",
@@ -105,6 +113,7 @@ fun CreatePostPage() {
 
 @Composable
 fun CreatePostScreen() {
+    val scope = rememberCoroutineScope()
     val breakpoint = rememberBreakpoint()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
     AdminPageLayout {
@@ -243,7 +252,10 @@ fun CreatePostScreen() {
                     Switch(
                         modifier = Modifier.margin(right = 8.px),
                         checked = uiState.thumbnailInputDisabled.not(),
-                        onCheckedChange = { uiState = uiState.copy(thumbnailInputDisabled = it.not()) },
+                        onCheckedChange = {
+                            uiState =
+                                uiState.copy(thumbnailInputDisabled = it.not())
+                        },
                         size = SwitchSize.MD
                     )
                     SpanText(
@@ -260,7 +272,7 @@ fun CreatePostScreen() {
                     onThumbnailSelect = { filename, file ->
                         (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value =
                             filename
-                        uiState = uiState.copy(thumbnail = filename)
+                        uiState = uiState.copy(thumbnail = file)
                     }
                 )
                 EditorControls(
@@ -275,7 +287,47 @@ fun CreatePostScreen() {
                 Editor(uiState.editorVisibility)
                 CreateButton(
                     text = "Create",
-                    onClick = {}
+                    onClick = {
+                        println("Reached onClick")
+                        uiState =
+                            uiState.copy(title = (document.getElementById(Id.titleInput) as HTMLInputElement).value)
+                        uiState =
+                            uiState.copy(subtitle = (document.getElementById(Id.subtitleInput) as HTMLInputElement).value)
+                        uiState =
+                            uiState.copy(content = (document.getElementById(Id.editor) as HTMLTextAreaElement).value)
+                        if (!uiState.thumbnailInputDisabled) {
+                            uiState =
+                                uiState.copy(thumbnail = (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value)
+                        }
+                        if (
+                            uiState.title.isNotEmpty() &&
+                            uiState.subtitle.isNotEmpty() &&
+                            uiState.thumbnail.isNotEmpty() &&
+                            uiState.content.isNotEmpty()
+                        ) {
+                            scope.launch {
+                                val result = addPost(
+                                    Post(
+                                        author = localStorage["username"].toString(),
+                                        title = uiState.title,
+                                        subtitle = uiState.subtitle,
+                                        date = Date.now().toLong(),
+                                        thumbnail = uiState.thumbnail,
+                                        content = uiState.content,
+                                        category = uiState.category,
+                                        isPopular = uiState.popular,
+                                        isMain = uiState.main,
+                                        isSponsored = uiState.sponsored
+                                    )
+                                )
+                                if (result) {
+                                    println("Successful!")
+                                }
+                            }
+                        } else {
+                            println("Please fill out all fields.")
+                        }
+                    }
                 )
             }
         }
