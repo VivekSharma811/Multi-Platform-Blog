@@ -18,6 +18,7 @@ import org.litote.kmongo.`in`
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
 import org.litote.kmongo.regex
+import org.litote.kmongo.setValue
 
 @InitApi
 fun initMongoDB(context: InitApiContext) {
@@ -94,5 +95,24 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
 
     override suspend fun readSelectedPost(id: String): Post {
         return postCollection.find(Post::id eq id).toList().first()
+    }
+
+    override suspend fun updatePost(post: Post): Boolean {
+        return postCollection
+            .updateOne(
+                Post::id eq post.id,
+                mutableListOf(
+                    setValue(Post::title, post.title),
+                    setValue(Post::subtitle, post.subtitle),
+                    setValue(Post::category, post.category),
+                    setValue(Post::thumbnail, post.thumbnail),
+                    setValue(Post::content, post.content),
+                    setValue(Post::isMain, post.isMain),
+                    setValue(Post::isPopular, post.isPopular),
+                    setValue(Post::isSponsored, post.isSponsored)
+                )
+            )
+            .awaitLast()
+            .wasAcknowledged()
     }
 }

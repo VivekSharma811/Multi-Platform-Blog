@@ -2,6 +2,7 @@ package com.hypheno.blog.pages.admin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.hypheno.blog.models.Constants.UPDATED_PARAM
 import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.util.Constants.FONT_FAMILY
@@ -26,6 +27,7 @@ import org.jetbrains.compose.web.css.px
 @Composable
 fun SuccessPage() {
     val context = rememberPageContext()
+    val postUpdated = context.route.params.containsKey(UPDATED_PARAM)
 
     LaunchedEffect(Unit) {
         delay(5000)
@@ -45,7 +47,7 @@ fun SuccessPage() {
             modifier = Modifier
                 .fontFamily(FONT_FAMILY)
                 .fontSize(24.px),
-            text = "Post Successfully Created!"
+            text = if(postUpdated) "Post Successfully Updated!" else "Post Successfully Created!"
         )
         SpanText(
             modifier = Modifier

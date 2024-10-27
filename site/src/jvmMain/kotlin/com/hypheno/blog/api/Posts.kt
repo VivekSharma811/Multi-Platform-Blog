@@ -90,6 +90,20 @@ suspend fun readSelectedPost(context: ApiContext) {
     }
 }
 
+@Api(routeOverride = "updatepost")
+suspend fun updatePost(context: ApiContext) {
+    try {
+        val updatedPost = context.req.getBody<Post>()
+        context.res.setBody(
+            updatedPost?.let {
+                context.data.getValue<MongoDB>().updatePost(it)
+            }
+        )
+    } catch (e: Exception) {
+        context.res.setBody(e.message)
+    }
+}
+
 inline fun <reified T> Response.setBody(data: T) {
     setBodyText(Json.encodeToString(data))
 }

@@ -30,6 +30,7 @@ import com.hypheno.blog.util.fetchSelectedPost
 import com.hypheno.blog.util.getEditor
 import com.hypheno.blog.util.getSelectedText
 import com.hypheno.blog.util.noBorder
+import com.hypheno.blog.util.updatePost
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -379,22 +380,41 @@ fun CreatePostScreen() {
                             uiState.content.isNotEmpty()
                         ) {
                             scope.launch {
-                                val result = addPost(
-                                    Post(
-                                        author = localStorage["username"].toString(),
-                                        title = uiState.title,
-                                        subtitle = uiState.subtitle,
-                                        date = Date.now().toLong(),
-                                        thumbnail = uiState.thumbnail,
-                                        content = uiState.content,
-                                        category = uiState.category,
-                                        isPopular = uiState.popular,
-                                        isMain = uiState.main,
-                                        isSponsored = uiState.sponsored
+                                if (hasPostIdParam) {
+                                    val result = updatePost(
+                                        Post(
+                                            id = uiState.id,
+                                            title = uiState.title,
+                                            subtitle = uiState.subtitle,
+                                            thumbnail = uiState.thumbnail,
+                                            content = uiState.content,
+                                            category = uiState.category,
+                                            isPopular = uiState.popular,
+                                            isMain = uiState.main,
+                                            isSponsored = uiState.sponsored
+                                        )
                                     )
-                                )
-                                if (result) {
-                                    context.router.navigateTo(Screen.AdminSuccess.route)
+                                    if (result) {
+                                        context.router.navigateTo(Screen.AdminSuccess.postUpdated())
+                                    }
+                                } else {
+                                    val result = addPost(
+                                        Post(
+                                            author = localStorage["username"].toString(),
+                                            title = uiState.title,
+                                            subtitle = uiState.subtitle,
+                                            date = Date.now().toLong(),
+                                            thumbnail = uiState.thumbnail,
+                                            content = uiState.content,
+                                            category = uiState.category,
+                                            isPopular = uiState.popular,
+                                            isMain = uiState.main,
+                                            isSponsored = uiState.sponsored
+                                        )
+                                    )
+                                    if (result) {
+                                        context.router.navigateTo(Screen.AdminSuccess.route)
+                                    }
                                 }
                             }
                         } else {

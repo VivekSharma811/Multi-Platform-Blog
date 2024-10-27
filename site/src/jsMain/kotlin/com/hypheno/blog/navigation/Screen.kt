@@ -2,6 +2,7 @@ package com.hypheno.blog.navigation
 
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Constants.QUERY_PARAM
+import com.hypheno.blog.models.Constants.UPDATED_PARAM
 
 sealed class Screen(val route: String) {
     object AdminHome : Screen(route = "/admin/")
@@ -12,5 +13,7 @@ sealed class Screen(val route: String) {
     object AdminMyPosts : Screen(route = "/admin/myposts") {
         fun searchByTitle(query: String) = "/admin/myposts?${QUERY_PARAM}=$query"
     }
-    object AdminSuccess : Screen(route = "/admin/success")
+    object AdminSuccess : Screen(route = "/admin/success") {
+        fun postUpdated() = "/admin/success?${UPDATED_PARAM}=true"
+    }
 }

@@ -148,6 +148,18 @@ suspend fun fetchSelectedPost(id: String): ApiResponse {
     }
 }
 
+suspend fun updatePost(post: Post): Boolean {
+    return try {
+        window.api.tryPost(
+            apiPath = "updatepost",
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().toBoolean()
+    } catch (e: Exception) {
+        println(e.message)
+        false
+    }
+}
+
 inline fun <reified T> String?.parseData(): T {
     return Json.decodeFromString(this.toString())
 }
