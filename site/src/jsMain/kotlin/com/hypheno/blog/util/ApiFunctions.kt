@@ -102,7 +102,7 @@ suspend fun fetchMyPosts(
         val result = window.api.tryGet(
             apiPath = "readmyposts?${SKIP_PARAM}=$skip&${AUTHOR_PARAM}=${localStorage["username"]}"
         )?.decodeToString()
-        onSuccess(Json.decodeFromString(result.toString()))
+        onSuccess(result.parseData())
     } catch (e: Exception) {
         onError(e)
     }
@@ -131,7 +131,7 @@ suspend fun searchPostsByTitle(
         val result = window.api.tryGet(
             apiPath = "searchposts?${QUERY_PARAM}=$query&${SKIP_PARAM}=$skip"
         )?.decodeToString()
-        onSuccess(Json.decodeFromString(result.toString()))
+        onSuccess(result.parseData())
     } catch (e: Exception) {
         onError(e)
     }
@@ -142,11 +142,7 @@ suspend fun fetchSelectedPost(id: String): ApiResponse {
         val result = window.api.tryGet(
             apiPath = "readselectedpost?${POST_ID_PARAM}=$id"
         )?.decodeToString()
-        if (result != null) {
-            Json.decodeFromString<ApiResponse>(result)
-        } else {
-            ApiResponse.Error(message = "Result is null")
-        }
+        result?.parseData() ?: ApiResponse.Error(message = "Result is null")
     } catch (e: Exception) {
         ApiResponse.Error(message = e.message.toString())
     }
