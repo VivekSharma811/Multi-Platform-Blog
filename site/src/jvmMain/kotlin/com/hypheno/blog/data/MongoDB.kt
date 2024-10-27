@@ -1,18 +1,16 @@
 package com.hypheno.blog.data
 
+import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
 import com.hypheno.blog.util.Constants.DATABASE_NAME
-import com.hypheno.blog.util.Constants.POSTS_PER_PAGE
-import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.and
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitLast
-import org.litote.kmongo.MongoOperator
 import org.litote.kmongo.coroutine.toList
 import org.litote.kmongo.descending
 import org.litote.kmongo.eq

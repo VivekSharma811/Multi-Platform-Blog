@@ -1,7 +1,7 @@
 package com.hypheno.blog.navigation
 
-import com.hypheno.blog.util.Constants.POST_ID_PARAM
-import com.hypheno.blog.util.Constants.QUERY_PARAM
+import com.hypheno.blog.models.Constants.POST_ID_PARAM
+import com.hypheno.blog.models.Constants.QUERY_PARAM
 
 sealed class Screen(val route: String) {
     object AdminHome : Screen(route = "/admin/")

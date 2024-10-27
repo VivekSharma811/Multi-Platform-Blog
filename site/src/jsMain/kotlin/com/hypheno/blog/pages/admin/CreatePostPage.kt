@@ -12,6 +12,7 @@ import com.hypheno.blog.components.ControlPopup
 import com.hypheno.blog.components.MessagePopup
 import com.hypheno.blog.models.ApiResponse
 import com.hypheno.blog.models.Category
+import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.ControlStyle
 import com.hypheno.blog.models.EditorControl
 import com.hypheno.blog.models.Post
@@ -19,7 +20,6 @@ import com.hypheno.blog.models.Theme
 import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.EditorKeyStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
-import com.hypheno.blog.util.Constants.POST_ID_PARAM
 import com.hypheno.blog.util.Constants.SIDE_PANEL_WIDTH
 import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.IsUserLoggedIn
@@ -138,7 +138,7 @@ fun CreatePostScreen() {
     }
     LaunchedEffect(hasPostIdParam) {
         if(hasPostIdParam) {
-            val postId = context.route.params.getValue(POST_ID_PARAM)
+            val postId = context.route.params[POST_ID_PARAM] ?: ""
             val response = fetchSelectedPost(id = postId)
             if(response is ApiResponse.Success) {
             }

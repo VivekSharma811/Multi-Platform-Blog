@@ -2,11 +2,14 @@ package com.hypheno.blog.util
 
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.ApiResponse
+import com.hypheno.blog.models.Constants.AUTHOR_PARAM
+import com.hypheno.blog.models.Constants.POST_ID_PARAM
+import com.hypheno.blog.models.Constants.QUERY_PARAM
+import com.hypheno.blog.models.Constants.SKIP_PARAM
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.User
 import com.hypheno.blog.models.UserSecured
-import com.hypheno.blog.util.Constants.POST_ID_PARAM
 import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.browser.http.http
 import kotlinx.browser.localStorage
@@ -97,7 +100,7 @@ suspend fun fetchMyPosts(
 ) {
     try {
         val result = window.api.tryGet(
-            apiPath = "readmyposts?skip=$skip&author=${localStorage["username"]}"
+            apiPath = "readmyposts?${SKIP_PARAM}=$skip&${AUTHOR_PARAM}=${localStorage["username"]}"
         )?.decodeToString()
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {
@@ -126,7 +129,7 @@ suspend fun searchPostsByTitle(
 ) {
     try {
         val result = window.api.tryGet(
-            apiPath = "searchposts?query=$query&skip=$skip"
+            apiPath = "searchposts?${QUERY_PARAM}=$query&${SKIP_PARAM}=$skip"
         )?.decodeToString()
         onSuccess(Json.decodeFromString(result.toString()))
     } catch (e: Exception) {
