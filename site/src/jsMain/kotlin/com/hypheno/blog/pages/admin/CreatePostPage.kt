@@ -111,12 +111,30 @@ data class CreatePageUiState(
     var category: Category = Category.Programming,
     var popular: Boolean = false,
     var main: Boolean = false,
+    var buttonText: String = "Create",
     var sponsored: Boolean = false,
     var editorVisibility: Boolean = true,
     var messagePopup: Boolean = false,
     var linkPopup: Boolean = false,
     var imagePopup: Boolean = false
-)
+) {
+    fun reset() = this.copy(
+        id = "",
+        title = "",
+        subtitle = "",
+        thumbnail = "",
+        content = "",
+        category = Category.Programming,
+        buttonText = "Create",
+        main = false,
+        popular = false,
+        sponsored = false,
+        editorVisibility = true,
+        messagePopup = false,
+        linkPopup = false,
+        imagePopup = false
+    )
+}
 
 @Page(routeOverride = "create")
 @Composable
@@ -141,6 +159,23 @@ fun CreatePostScreen() {
             val postId = context.route.params[POST_ID_PARAM] ?: ""
             val response = fetchSelectedPost(id = postId)
             if(response is ApiResponse.Success) {
+                (document.getElementById(Id.editor) as HTMLTextAreaElement).value =
+                    response.data.content
+                uiState = uiState.copy(
+                    id = response.data.id,
+                    title = response.data.title,
+                    subtitle = response.data.subtitle,
+                    content = response.data.content,
+                    category = response.data.category,
+                    thumbnail = response.data.thumbnail,
+                    buttonText = "Update",
+                    main = response.data.isMain,
+                    popular = response.data.isPopular,
+                    sponsored = response.data.isSponsored
+                )
+            } else {
+                (document.getElementById(Id.editor) as HTMLTextAreaElement).value = ""
+                uiState = uiState.reset()
             }
         }
     }
@@ -246,7 +281,7 @@ fun CreatePostScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Title")
-                            attr("value", "")
+                            attr("value", uiState.title)
                         }
                 )
                 Input(
@@ -263,7 +298,7 @@ fun CreatePostScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Subtitle")
-                            attr("value", "")
+                            attr("value", uiState.subtitle)
                         }
                 )
                 CategoryDropdown(
@@ -321,7 +356,7 @@ fun CreatePostScreen() {
                 )
                 Editor(uiState.editorVisibility)
                 CreateButton(
-                    text = "Create",
+                    text = uiState.buttonText,
                     onClick = {
                         uiState =
                             uiState.copy(title = (document.getElementById(Id.titleInput) as HTMLInputElement).value)
