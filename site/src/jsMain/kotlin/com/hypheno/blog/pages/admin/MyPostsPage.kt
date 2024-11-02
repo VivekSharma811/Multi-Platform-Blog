@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.AdminPageLayout
-import com.hypheno.blog.components.Posts
+import com.hypheno.blog.components.PostsView
 import com.hypheno.blog.components.SearchBar
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
@@ -226,7 +226,7 @@ fun MyPostsScreen() {
                     SpanText(text = "Delete")
                 }
             }
-            Posts(
+            PostsView(
                 breakpoint = breakpoint,
                 showMoreVisibility = showMoreVisibility,
                 onShowMore = {
@@ -281,6 +281,7 @@ fun MyPostsScreen() {
                     selectedPosts.remove(it)
                     switchText = parseSwitchText(selectedPosts.toList())
                 },
+                onClick = { context.router.navigateTo(Screen.AdminCreate.passPostId(id = it)) }
             )
         }
     }
