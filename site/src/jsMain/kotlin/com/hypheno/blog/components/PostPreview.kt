@@ -44,6 +44,7 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
+import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.LineStyle
@@ -61,6 +62,7 @@ fun PostPreview(
     vertical: Boolean = true,
     thumbnailHeight: CSSSizeValue<CSSUnit.px> = 320.px,
     titleMaxLines: Int = 2,
+    titleColor: CSSColorValue = Colors.Black,
     onSelect: (String) -> Unit = {},
     onDeselect: (String) -> Unit = {},
     onClick: (String) -> Unit
@@ -69,7 +71,7 @@ fun PostPreview(
     if (vertical) {
         Column(
             modifier = modifier
-                .fillMaxWidth(if(darkTheme) 100.percent else 95.percent)
+                .fillMaxWidth(if (darkTheme) 100.percent else 95.percent)
                 .margin(bottom = 24.px)
                 .padding(all = if (selectableMode) 10.px else 0.px)
                 .borderRadius(r = 4.px)
@@ -90,7 +92,12 @@ fun PostPreview(
                         onClick(post.id)
                     }
                 }
-                .transition(CSSTransition(property = TransitionProperty.All, duration = 200.ms))
+                .transition(
+                    CSSTransition(
+                        property = TransitionProperty.All,
+                        duration = 200.ms
+                    )
+                )
                 .cursor(Cursor.Pointer)
         ) {
             PostContent(
@@ -100,17 +107,23 @@ fun PostPreview(
                 vertical = vertical,
                 thumbnailHeight = thumbnailHeight,
                 titleMaxLines = titleMaxLines,
+                titleColor = titleColor,
                 checked = checked
             )
         }
     } else {
-        Row(modifier = modifier.cursor(Cursor.Pointer)) {
+        Row(
+            modifier = modifier
+                .onClick { onClick(post.id) }
+                .cursor(Cursor.Pointer)
+        ) {
             PostContent(
                 post = post,
                 selectableMode = selectableMode,
                 darkTheme = darkTheme,
                 vertical = vertical,
                 thumbnailHeight = thumbnailHeight,
+                titleColor = titleColor,
                 titleMaxLines = titleMaxLines,
                 checked = checked
             )
@@ -126,6 +139,7 @@ fun PostContent(
     vertical: Boolean,
     thumbnailHeight: CSSSizeValue<CSSUnit.px>,
     titleMaxLines: Int,
+    titleColor: CSSColorValue,
     checked: Boolean
 ) {
     Image(
@@ -157,7 +171,7 @@ fun PostContent(
                 .fontFamily(FONT_FAMILY)
                 .fontSize(20.px)
                 .fontWeight(FontWeight.Bold)
-                .color(if (darkTheme) Colors.White else Colors.Black)
+                .color(if (darkTheme) Colors.White else titleColor)
                 .textOverflow(TextOverflow.Ellipsis)
                 .overflow(Overflow.Hidden)
                 .styleModifier {

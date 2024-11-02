@@ -60,4 +60,8 @@ enum class Theme(
         hex = "#646464",
         rgb = rgb(100, 100, 100)
     ),
+    Sponsored(
+        hex = "#3300FF",
+        rgb = rgb(r = 51, g = 0, b = 255)
+    )
 }

@@ -9,6 +9,7 @@ import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.sections.MainSection
 import com.hypheno.blog.sections.PostsSection
+import com.hypheno.blog.sections.SponsoredPostsSection
 import com.hypheno.blog.util.fetchLatestPosts
 import com.hypheno.blog.util.fetchMainPosts
 import com.hypheno.blog.util.fetchSponsoredPosts
@@ -32,6 +33,7 @@ fun HomePage() {
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
     val latestPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     var latestPostsToSkip by remember { mutableStateOf(0) }
+    val sponsoredPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     var showMoreLatest by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -41,17 +43,21 @@ fun HomePage() {
         )
         fetchLatestPosts(
             skip = latestPostsToSkip,
-            onSuccess = {
-                if (it is ApiListResponse.Success) {
-                    latestPosts.addAll(it.data)
+            onSuccess = { response ->
+                if (response is ApiListResponse.Success) {
+                    latestPosts.addAll(response.data)
                     latestPostsToSkip += POSTS_PER_PAGE
-                    if (it.data.size >= POSTS_PER_PAGE) showMoreLatest = true
+                    if (response.data.size >= POSTS_PER_PAGE) showMoreLatest = true
                 }
             },
             onError = {}
         )
         fetchSponsoredPosts(
-            onSuccess = {},
+            onSuccess = { response ->
+                if (response is ApiListResponse.Success) {
+                    sponsoredPosts.addAll(response.data)
+                }
+            },
             onError = {}
         )
     }
@@ -100,6 +106,11 @@ fun HomePage() {
             },
             onClick = {
             }
+        )
+        SponsoredPostsSection(
+            breakpoint = breakpoint,
+            posts = sponsoredPosts,
+            onClick = {}
         )
     }
 }
