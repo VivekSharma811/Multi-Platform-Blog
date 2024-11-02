@@ -49,6 +49,8 @@ import org.jetbrains.compose.web.css.px
 @Composable
 fun HeaderSection(
     breakpoint: Breakpoint,
+    selectedCategory: Category? = null,
+    logo: String = Res.Image.logoHome,
     onMenuOpen: () -> Unit
 ) {
     Box(
@@ -66,6 +68,8 @@ fun HeaderSection(
         ) {
             Header(
                 breakpoint = breakpoint,
+                logo = logo,
+                selectedCategory = selectedCategory,
                 onMenuOpen = onMenuOpen
             )
         }
@@ -75,6 +79,8 @@ fun HeaderSection(
 @Composable
 fun Header(
     breakpoint: Breakpoint,
+    logo: String,
+    selectedCategory: Category?,
     onMenuOpen: () -> Unit
 ) {
     var fullSearchBarOpened by remember { mutableStateOf(false) }
@@ -113,12 +119,12 @@ fun Header(
                     .width(if (breakpoint >= Breakpoint.SM) 100.px else 70.px)
                     .cursor(Cursor.Pointer)
                     .onClick { },
-                src = Res.Image.logoHome,
+                src = logo,
                 description = "Logo Image"
             )
         }
         if (breakpoint >= Breakpoint.LG) {
-            CategoryNavigationItems()
+            CategoryNavigationItems(selectedCategory = selectedCategory)
         }
         Spacer()
         SearchBar(

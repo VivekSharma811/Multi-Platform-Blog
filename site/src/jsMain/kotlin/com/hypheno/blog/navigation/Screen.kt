@@ -1,5 +1,7 @@
 package com.hypheno.blog.navigation
 
+import com.hypheno.blog.models.Category
+import com.hypheno.blog.models.Constants.CATEGORY_PARAM
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Constants.QUERY_PARAM
 import com.hypheno.blog.models.Constants.UPDATED_PARAM
@@ -15,5 +17,8 @@ sealed class Screen(val route: String) {
     }
     object AdminSuccess : Screen(route = "/admin/success") {
         fun postUpdated() = "/admin/success?${UPDATED_PARAM}=true"
+    }
+    object SearchPage: Screen(route = "/search/query") {
+        fun searchByCategory(category: Category) = "/search/query?${CATEGORY_PARAM}=${category.name}"
     }
 }
