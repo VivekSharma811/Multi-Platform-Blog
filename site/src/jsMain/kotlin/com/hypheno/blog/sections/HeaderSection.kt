@@ -9,10 +9,12 @@ import com.hypheno.blog.components.CategoryNavigationItems
 import com.hypheno.blog.components.SearchBar
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.navigation.Screen
 import com.hypheno.blog.styles.CategoryItemStyle
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Constants.HEADER_HEIGHT
 import com.hypheno.blog.util.Constants.PAGE_WIDTH
+import com.hypheno.blog.util.Id
 import com.hypheno.blog.util.Res
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -36,6 +38,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.textDecorationLine
 import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.icons.fa.FaBars
 import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
@@ -43,8 +46,10 @@ import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.w3c.dom.HTMLInputElement
 
 @Composable
 fun HeaderSection(
@@ -83,6 +88,7 @@ fun Header(
     selectedCategory: Category?,
     onMenuOpen: () -> Unit
 ) {
+    val context = rememberPageContext()
     var fullSearchBarOpened by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
@@ -118,7 +124,7 @@ fun Header(
                     .margin(right = 50.px)
                     .width(if (breakpoint >= Breakpoint.SM) 100.px else 70.px)
                     .cursor(Cursor.Pointer)
-                    .onClick { },
+                    .onClick { context.router.navigateTo(Screen.HomePage.route) },
                 src = logo,
                 description = "Logo Image"
             )
@@ -131,7 +137,11 @@ fun Header(
             breakpoint = breakpoint,
             fullWidth = fullSearchBarOpened,
             darkTheme = true,
-            onEnterClick = {},
+            onEnterClick = {
+                val query =
+                    (document.getElementById(Id.adminSearchBar) as HTMLInputElement).value
+                context.router.navigateTo(Screen.SearchPage.searchByTitle(query = query))
+            },
             onSearchIconClick = { fullSearchBarOpened = it }
         )
     }

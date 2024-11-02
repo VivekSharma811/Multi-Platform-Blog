@@ -18,7 +18,10 @@ sealed class Screen(val route: String) {
     object AdminSuccess : Screen(route = "/admin/success") {
         fun postUpdated() = "/admin/success?${UPDATED_PARAM}=true"
     }
-    object SearchPage: Screen(route = "/search/query") {
-        fun searchByCategory(category: Category) = "/search/query?${CATEGORY_PARAM}=${category.name}"
+    object HomePage : Screen(route = "/")
+    object SearchPage : Screen(route = "/search/query") {
+        fun searchByCategory(category: Category) =
+            "/search/query?${CATEGORY_PARAM}=${category.name}"
+        fun searchByTitle(query: String) = "/search/query?${QUERY_PARAM}=$query"
     }
 }
