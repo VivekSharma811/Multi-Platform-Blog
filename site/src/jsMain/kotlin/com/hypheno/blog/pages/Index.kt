@@ -3,7 +3,9 @@ package com.hypheno.blog.pages
 import androidx.compose.runtime.*
 import com.hypheno.blog.components.CategoryNavigationItems
 import com.hypheno.blog.components.OverflowSidePanel
+import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.sections.HeaderSection
+import com.hypheno.blog.util.fetchMainPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -19,6 +21,15 @@ import org.jetbrains.compose.web.dom.Text
 fun HomePage() {
     val breakpoint = rememberBreakpoint()
     var overflowOpened by remember { mutableStateOf(false) }
+    var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+
+    LaunchedEffect(Unit) {
+        fetchMainPosts(
+            onSuccess = { mainPosts = it },
+            onError = {}
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,

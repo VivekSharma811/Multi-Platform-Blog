@@ -5,6 +5,7 @@ import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
 import com.hypheno.blog.util.Constants.DATABASE_NAME
+import com.hypheno.blog.util.Constants.MAIN_POSTS_LIMIT
 import com.mongodb.client.model.Filters.and
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
@@ -72,6 +73,15 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
             .sort(descending(PostWithoutDetails::date))
             .skip(skip)
             .limit(POSTS_PER_PAGE)
+            .toList()
+    }
+
+    override suspend fun readMainPosts(): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::isMain eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .limit(MAIN_POSTS_LIMIT)
             .toList()
     }
 
