@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.hypheno.blog.components.CategoryNavigationItems
 import com.hypheno.blog.components.SearchBar
 import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Theme
@@ -46,7 +47,10 @@ import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 
 @Composable
-fun HeaderSection(breakpoint: Breakpoint) {
+fun HeaderSection(
+    breakpoint: Breakpoint,
+    onMenuOpen: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,12 +64,19 @@ fun HeaderSection(breakpoint: Breakpoint) {
                 .maxWidth(PAGE_WIDTH.px),
             contentAlignment = Alignment.TopCenter
         ) {
-            Header(breakpoint = breakpoint)
+            Header(
+                breakpoint = breakpoint,
+                onMenuOpen = onMenuOpen
+            )
         }
     }
 }
+
 @Composable
-fun Header(breakpoint: Breakpoint) {
+fun Header(
+    breakpoint: Breakpoint,
+    onMenuOpen: () -> Unit
+) {
     var fullSearchBarOpened by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
@@ -74,7 +85,7 @@ fun Header(breakpoint: Breakpoint) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (breakpoint <= Breakpoint.MD) {
-            if(fullSearchBarOpened) {
+            if (fullSearchBarOpened) {
                 FaXmark(
                     modifier = Modifier
                         .margin(right = 24.px)
@@ -84,18 +95,18 @@ fun Header(breakpoint: Breakpoint) {
                     size = IconSize.XL
                 )
             }
-            if(!fullSearchBarOpened) {
+            if (!fullSearchBarOpened) {
                 FaBars(
                     modifier = Modifier
                         .margin(right = 24.px)
                         .color(Colors.White)
                         .cursor(Cursor.Pointer)
-                        .onClick { },
+                        .onClick { onMenuOpen() },
                     size = IconSize.XL
                 )
             }
         }
-        if(!fullSearchBarOpened) {
+        if (!fullSearchBarOpened) {
             Image(
                 modifier = Modifier
                     .margin(right = 50.px)
@@ -107,19 +118,7 @@ fun Header(breakpoint: Breakpoint) {
             )
         }
         if (breakpoint >= Breakpoint.LG) {
-            Category.entries.forEach { category ->
-                Link(
-                    modifier = CategoryItemStyle.toModifier()
-                        .margin(right = 24.px)
-                        .fontFamily(FONT_FAMILY)
-                        .fontSize(16.px)
-                        .fontWeight(FontWeight.Medium)
-                        .textDecorationLine(TextDecorationLine.None)
-                        .onClick { },
-                    path = "",
-                    text = category.name
-                )
-            }
+            CategoryNavigationItems()
         }
         Spacer()
         SearchBar(

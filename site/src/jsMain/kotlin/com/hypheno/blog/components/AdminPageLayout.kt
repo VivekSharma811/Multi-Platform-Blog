@@ -32,10 +32,15 @@ fun AdminPageLayout(
             SidePanel(onMenuClick = {
                 overflowMenuOpened = true
             })
-            if(overflowMenuOpened) {
-                OverflowSidePanel(onMenuClose = {
-                    overflowMenuOpened = false
-                })
+            if (overflowMenuOpened) {
+                OverflowSidePanel(
+                    onMenuClose = {
+                        overflowMenuOpened = false
+                    },
+                    content = {
+                        NavigationItems()
+                    }
+                )
             }
             content()
         }

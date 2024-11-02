@@ -146,7 +146,8 @@ private fun CollapsedSidePanel(
 @Composable
 fun OverflowSidePanel(
     modifier: Modifier = Modifier,
-    onMenuClose: () -> Unit
+    onMenuClose: () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val breakpoint = rememberBreakpoint()
@@ -213,13 +214,13 @@ fun OverflowSidePanel(
                     modifier = Modifier.width(80.px)
                 )
             }
-            NavigationItems()
+            content()
         }
     }
 }
 
 @Composable
-private fun NavigationItems() {
+fun NavigationItems() {
     val context = rememberPageContext()
     NavigationItem(
         modifier = Modifier.margin(bottom = 24.px),
