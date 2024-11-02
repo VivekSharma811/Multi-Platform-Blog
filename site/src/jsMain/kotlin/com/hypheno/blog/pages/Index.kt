@@ -5,6 +5,7 @@ import com.hypheno.blog.components.CategoryNavigationItems
 import com.hypheno.blog.components.OverflowSidePanel
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.sections.HeaderSection
+import com.hypheno.blog.sections.MainSection
 import com.hypheno.blog.util.fetchMainPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -45,5 +46,6 @@ fun HomePage() {
             breakpoint = breakpoint,
             onMenuOpen = { overflowOpened = true }
         )
+        MainSection(breakpoint = breakpoint, posts = mainPosts)
     }
 }
