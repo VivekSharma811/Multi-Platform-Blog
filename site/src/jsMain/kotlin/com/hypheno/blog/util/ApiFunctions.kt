@@ -6,6 +6,7 @@ import com.hypheno.blog.models.Constants.AUTHOR_PARAM
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Constants.QUERY_PARAM
 import com.hypheno.blog.models.Constants.SKIP_PARAM
+import com.hypheno.blog.models.Newsletter
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.RandomJoke
 import com.hypheno.blog.models.User
@@ -212,6 +213,13 @@ suspend fun updatePost(post: Post): Boolean {
         println(e.message)
         false
     }
+}
+
+suspend fun subscribeNewsletter(newsletter: Newsletter): String {
+    return window.api.tryPost(
+        apiPath = "subscribe",
+        body = Json.encodeToString(newsletter).encodeToByteArray()
+    )?.decodeToString().toString()
 }
 
 inline fun <reified T> String?.parseData(): T {

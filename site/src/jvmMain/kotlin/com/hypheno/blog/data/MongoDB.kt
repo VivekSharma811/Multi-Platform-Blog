@@ -1,6 +1,7 @@
 package com.hypheno.blog.data
 
 import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
+import com.hypheno.blog.models.Newsletter
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
@@ -36,6 +37,7 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
     private val database = client.getDatabase(DATABASE_NAME)
     private val userCollection = database.getCollection<User>()
     private val postCollection = database.getCollection<Post>()
+    private val newsletterCollection = database.getCollection<Newsletter>()
 
     override suspend fun checkUserExistence(user: User): User? {
         return try {
@@ -159,5 +161,21 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
             )
             .awaitLast()
             .wasAcknowledged()
+    }
+
+    override suspend fun subscribe(newsletter: Newsletter): String {
+        val result = newsletterCollection
+            .find(Newsletter::email eq newsletter.email)
+            .toList()
+        return if (result.isNotEmpty()) {
+            "You're already subscribed."
+        } else {
+            val newEmail = newsletterCollection
+                .insertOne(newsletter)
+                .awaitFirst()
+                .wasAcknowledged()
+            if (newEmail) "Successfully Subscribed!"
+            else "Something went wrong. Please try again later."
+        }
     }
 }

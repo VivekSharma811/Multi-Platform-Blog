@@ -1,5 +1,6 @@
 package com.hypheno.blog.data
 
+import com.hypheno.blog.models.Newsletter
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.models.User
@@ -28,4 +29,6 @@ interface MongoRepository {
     suspend fun readSelectedPost(id: String): Post
 
     suspend fun updatePost(post: Post): Boolean
+
+    suspend fun subscribe(newsletter: Newsletter): String
 }
