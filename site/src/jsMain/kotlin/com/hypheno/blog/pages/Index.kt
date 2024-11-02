@@ -6,6 +6,7 @@ import com.hypheno.blog.components.OverflowSidePanel
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.sections.MainSection
+import com.hypheno.blog.util.fetchLatestPosts
 import com.hypheno.blog.util.fetchMainPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -23,11 +24,23 @@ fun HomePage() {
     val breakpoint = rememberBreakpoint()
     var overflowOpened by remember { mutableStateOf(false) }
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+    var latestPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
+    var latestPostsToSkip by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         fetchMainPosts(
             onSuccess = { mainPosts = it },
             onError = {}
+        )
+        fetchLatestPosts(
+            skip = latestPostsToSkip,
+            onSuccess = {
+                latestPosts = it
+                println(it)
+            },
+            onError = {
+                println(it)
+            }
         )
     }
 
