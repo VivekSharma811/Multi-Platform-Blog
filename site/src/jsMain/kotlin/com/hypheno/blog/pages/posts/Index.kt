@@ -5,8 +5,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.hypheno.blog.components.CategoryNavigationItems
+import com.hypheno.blog.components.ErrorView
 import com.hypheno.blog.components.LoadingIndicator
 import com.hypheno.blog.components.OverflowSidePanel
 import com.hypheno.blog.models.ApiResponse
@@ -32,6 +34,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
@@ -44,6 +47,8 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.HTMLDivElement
@@ -51,6 +56,7 @@ import org.w3c.dom.HTMLDivElement
 @Page(routeOverride = "post")
 @Composable
 fun PostPage() {
+    val scope = rememberCoroutineScope()
     val context = rememberPageContext()
     val breakpoint = rememberBreakpoint()
     var overflowOpened by remember { mutableStateOf(false) }
@@ -88,11 +94,23 @@ fun PostPage() {
         when (apiResponse) {
             is ApiResponse.Success -> {
                 PostContent(post = (apiResponse as ApiResponse.Success).data)
+                scope.launch {
+                    delay(50)
+                    try {
+                        js("hljs.highlightAll()") as Unit
+                    } catch (e: Exception) {
+                        println(e.message)
+                    }
+                }
             }
             is ApiResponse.Idle -> {
                 LoadingIndicator()
             }
-            else -> {}
+
+            is ApiResponse.Error -> {
+                ErrorView(message = (apiResponse as ApiResponse.Error).message)
+            }
+
         }
     }
 }
@@ -104,9 +122,9 @@ fun PostContent(post: Post) {
     }
     Column(
         modifier = Modifier
-            .margin(top = 50.px)
+            .margin(top = 50.px, bottom = 100.px)
             .fillMaxWidth()
-            .maxWidth(800.px),
+            .height(600.px),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SpanText(

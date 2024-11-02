@@ -161,6 +161,7 @@ fun PostContent(
                 condition = !vertical,
                 other = Modifier.margin(left = 20.px)
             )
+            .fillMaxWidth()
     ) {
         SpanText(
             modifier = Modifier
