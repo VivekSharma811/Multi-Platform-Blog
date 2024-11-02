@@ -12,6 +12,7 @@ import com.hypheno.blog.sections.PostsSection
 import com.hypheno.blog.sections.SponsoredPostsSection
 import com.hypheno.blog.util.fetchLatestPosts
 import com.hypheno.blog.util.fetchMainPosts
+import com.hypheno.blog.util.fetchPopularPosts
 import com.hypheno.blog.util.fetchSponsoredPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -32,9 +33,12 @@ fun HomePage() {
     var overflowOpened by remember { mutableStateOf(false) }
     var mainPosts by remember { mutableStateOf<ApiListResponse>(ApiListResponse.Idle) }
     val latestPosts = remember { mutableStateListOf<PostWithoutDetails>() }
-    var latestPostsToSkip by remember { mutableStateOf(0) }
     val sponsoredPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    val popularPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    var latestPostsToSkip by remember { mutableStateOf(0) }
+    var popularPostsToSkip by remember { mutableStateOf(0) }
     var showMoreLatest by remember { mutableStateOf(false) }
+    var showMorePopular by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         fetchMainPosts(
@@ -59,6 +63,13 @@ fun HomePage() {
                 }
             },
             onError = {}
+        )
+        fetchPopularPosts(
+            skip = popularPostsToSkip,
+            onSuccess = {
+            },
+            onError = {
+            }
         )
     }
 
