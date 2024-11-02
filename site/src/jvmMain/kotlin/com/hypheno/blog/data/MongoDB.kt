@@ -1,5 +1,6 @@
 package com.hypheno.blog.data
 
+import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.models.Newsletter
 import com.hypheno.blog.models.Post
@@ -134,6 +135,19 @@ class MongoDB(val context: InitApiContext) : MongoRepository {
         return postCollection
             .withDocumentClass(PostWithoutDetails::class.java)
             .find(PostWithoutDetails::title regex regexQuery)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POSTS_PER_PAGE)
+            .toList()
+    }
+
+    override suspend fun searchPostsByCategory(
+        category: Category,
+        skip: Int
+    ): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::category eq category)
             .sort(descending(PostWithoutDetails::date))
             .skip(skip)
             .limit(POSTS_PER_PAGE)

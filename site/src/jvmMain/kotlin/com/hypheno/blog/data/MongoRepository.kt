@@ -1,5 +1,6 @@
 package com.hypheno.blog.data
 
+import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Newsletter
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.PostWithoutDetails
@@ -25,6 +26,8 @@ interface MongoRepository {
     suspend fun deleteSelectedPosts(ids: List<String>): Boolean
 
     suspend fun searchPostsByTitle(query: String, skip: Int): List<PostWithoutDetails>
+
+    suspend fun searchPostsByCategory(category: Category, skip: Int): List<PostWithoutDetails>
 
     suspend fun readSelectedPost(id: String): Post
 

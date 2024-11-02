@@ -3,7 +3,9 @@ package com.hypheno.blog.api
 import com.hypheno.blog.data.MongoDB
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.ApiResponse
+import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Constants.AUTHOR_PARAM
+import com.hypheno.blog.models.Constants.CATEGORY_PARAM
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Constants.QUERY_PARAM
 import com.hypheno.blog.models.Constants.SKIP_PARAM
@@ -108,6 +110,22 @@ suspend fun searchPostsByTitle(context: ApiContext) {
         val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
         val posts = context.data.getValue<MongoDB>().searchPostsByTitle(
             query = query,
+            skip = skip
+        )
+        context.res.setBody(ApiListResponse.Success(data = posts))
+    } catch (e: Exception) {
+        context.res.setBody(ApiListResponse.Error(message = e.message.toString()))
+    }
+}
+
+@Api(routeOverride = "searchpostsbycategory")
+suspend fun searchPostsByCategory(context: ApiContext) {
+    try {
+        val category =
+            Category.valueOf(context.req.params[CATEGORY_PARAM] ?: Category.Programming.name)
+        val skip = context.req.params[SKIP_PARAM]?.toInt() ?: 0
+        val posts = context.data.getValue<MongoDB>().searchPostsByCategory(
+            category = category,
             skip = skip
         )
         context.res.setBody(ApiListResponse.Success(data = posts))

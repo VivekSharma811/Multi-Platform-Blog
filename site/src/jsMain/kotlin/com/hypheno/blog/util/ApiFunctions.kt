@@ -2,7 +2,9 @@ package com.hypheno.blog.util
 
 import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.ApiResponse
+import com.hypheno.blog.models.Category
 import com.hypheno.blog.models.Constants.AUTHOR_PARAM
+import com.hypheno.blog.models.Constants.CATEGORY_PARAM
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Constants.QUERY_PARAM
 import com.hypheno.blog.models.Constants.SKIP_PARAM
@@ -188,6 +190,23 @@ suspend fun searchPostsByTitle(
         )?.decodeToString()
         onSuccess(result.parseData())
     } catch (e: Exception) {
+        onError(e)
+    }
+}
+
+suspend fun searchPostsByCategory(
+    category: Category,
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit
+) {
+    try {
+        val result = window.api.tryGet(
+            apiPath = "searchpostsbycategory?${CATEGORY_PARAM}=${category.name}&${SKIP_PARAM}=$skip"
+        )?.decodeToString()
+        onSuccess(result.parseData())
+    } catch (e: Exception) {
+        println(e.message)
         onError(e)
     }
 }
