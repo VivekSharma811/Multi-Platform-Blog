@@ -15,6 +15,7 @@ import com.hypheno.blog.models.ApiResponse
 import com.hypheno.blog.models.Constants.POST_ID_PARAM
 import com.hypheno.blog.models.Post
 import com.hypheno.blog.models.Theme
+import com.hypheno.blog.sections.FooterSection
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.util.Constants.FONT_FAMILY
 import com.hypheno.blog.util.Id
@@ -38,6 +39,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -110,8 +112,8 @@ fun PostPage() {
             is ApiResponse.Error -> {
                 ErrorView(message = (apiResponse as ApiResponse.Error).message)
             }
-
         }
+        FooterSection()
     }
 }
 
@@ -123,6 +125,7 @@ fun PostContent(post: Post) {
     Column(
         modifier = Modifier
             .margin(top = 50.px, bottom = 100.px)
+            .padding(leftRight = 24.px)
             .fillMaxWidth()
             .height(600.px),
         horizontalAlignment = Alignment.CenterHorizontally

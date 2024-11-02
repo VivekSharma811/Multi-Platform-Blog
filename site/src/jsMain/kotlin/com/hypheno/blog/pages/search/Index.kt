@@ -17,6 +17,7 @@ import com.hypheno.blog.models.Constants.CATEGORY_PARAM
 import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.models.Constants.QUERY_PARAM
 import com.hypheno.blog.models.PostWithoutDetails
+import com.hypheno.blog.sections.FooterSection
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.sections.PostsSection
 import com.hypheno.blog.util.Constants.FONT_FAMILY
@@ -212,5 +213,6 @@ fun SearchPage() {
                 }
             )
         } else LoadingIndicator()
+        FooterSection()
     }
 }

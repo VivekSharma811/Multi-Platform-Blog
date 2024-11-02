@@ -7,6 +7,7 @@ import com.hypheno.blog.models.ApiListResponse
 import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.navigation.Screen
+import com.hypheno.blog.sections.FooterSection
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.sections.MainSection
 import com.hypheno.blog.sections.NewsletterSection
@@ -163,5 +164,6 @@ fun HomePage() {
             onClick = { context.router.navigateTo(Screen.PostPage.getPost(id = it)) }
         )
         NewsletterSection(breakpoint = breakpoint)
+        FooterSection()
     }
 }
