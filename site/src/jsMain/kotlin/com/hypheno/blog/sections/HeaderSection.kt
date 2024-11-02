@@ -88,6 +88,10 @@ fun Header(breakpoint: Breakpoint) {
             }
         }
         Spacer()
-        SearchBar(onEnterClick = {})
+        SearchBar(
+            fullWidth = false,
+            darkTheme = true,
+            onEnterClick = {}
+        )
     }
 }
