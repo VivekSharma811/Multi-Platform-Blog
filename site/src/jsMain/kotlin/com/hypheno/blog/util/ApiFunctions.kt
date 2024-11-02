@@ -215,7 +215,7 @@ suspend fun updatePost(post: Post): Boolean {
     }
 }
 
-suspend fun subscribeNewsletter(newsletter: Newsletter): String {
+suspend fun subscribeToNewsletter(newsletter: Newsletter): String {
     return window.api.tryPost(
         apiPath = "subscribe",
         body = Json.encodeToString(newsletter).encodeToByteArray()

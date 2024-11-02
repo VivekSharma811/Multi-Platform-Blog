@@ -8,6 +8,7 @@ import com.hypheno.blog.models.Constants.POSTS_PER_PAGE
 import com.hypheno.blog.models.PostWithoutDetails
 import com.hypheno.blog.sections.HeaderSection
 import com.hypheno.blog.sections.MainSection
+import com.hypheno.blog.sections.NewsletterSection
 import com.hypheno.blog.sections.PostsSection
 import com.hypheno.blog.sections.SponsoredPostsSection
 import com.hypheno.blog.util.fetchLatestPosts
@@ -156,5 +157,6 @@ fun HomePage() {
             onClick = {
             }
         )
+        NewsletterSection(breakpoint = breakpoint)
     }
 }
