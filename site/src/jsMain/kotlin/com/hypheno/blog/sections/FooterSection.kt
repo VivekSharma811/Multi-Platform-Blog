@@ -39,7 +39,7 @@ fun FooterSection() {
                     .fontFamily(FONT_FAMILY)
                     .fontSize(14.px)
                     .color(Theme.Primary.rgb),
-                text = "Stevdza-San"
+                text = "Vivek Sharma"
             )
         }
     }
