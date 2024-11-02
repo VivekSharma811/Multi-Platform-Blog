@@ -11,6 +11,7 @@ import com.hypheno.blog.sections.MainSection
 import com.hypheno.blog.sections.PostsSection
 import com.hypheno.blog.util.fetchLatestPosts
 import com.hypheno.blog.util.fetchMainPosts
+import com.hypheno.blog.util.fetchSponsoredPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -47,6 +48,10 @@ fun HomePage() {
                     if (it.data.size >= POSTS_PER_PAGE) showMoreLatest = true
                 }
             },
+            onError = {}
+        )
+        fetchSponsoredPosts(
+            onSuccess = {},
             onError = {}
         )
     }
